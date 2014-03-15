@@ -4,30 +4,30 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix pdta: <http://www.techtane.info/personaldata.n3#> .
+@prefix pdta: <http://www.techtane.info/personaldata.ttl#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-<http://www.techtane.info/personaldata.n3>
+<http://www.techtane.info/personaldata.ttl>
       a       owl:Ontology ;
 	 owl:imports <http://www.w3.org/2006/time> .
 
 pdta:PersonalData
 	a owl:Class .
 
-pdta:ID
+pdta:dataId
  a owl:DatatypeProperty ;
  rdfs:domain pdta:PersonalData ;
  rdfs:label "ID"^^xsd:string ;
  rdfs:range xsd:string . 
 
-pdta:Instant
+pdta:hasInstant
 	a owl:ObjectProperty ;
-	rdfs:domain time:Instant ;
+	rdfs:domain pdta:PersonalData ;
 	rdfs:range time:Instant .
 
-pdta:Owner
+pdta:hasOwner
 	a owl:ObjectProperty ;
-	rdfs:domain foaf:Person ;
+	rdfs:domain pdta:PersonalData ;
 	rdfs:range foaf:Person .
 
 
