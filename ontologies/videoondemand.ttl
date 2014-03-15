@@ -1,0 +1,43 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix pdta: <http://www.techtane.info/personaldata.ttl#> .
+@prefix vod: <http://www.techtane.info/videoondemand.ttl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/> .
+
+###########################################
+# Classes
+###########################################
+
+vod:VideoOnDemand
+	a owl:Class ;
+	rdfs:subClassOf pdta:PersonalData .
+
+###########################################
+# Object properties
+###########################################	
+
+#Inferred from videoId with Orange VOD website
+vod:hasMainWork
+	a owl:ObjectProperty ;
+	rdfs:domain vod:VideoOnDemand ;
+	rdfs:range dbpedia-owl:Work .
+
+###########################################
+# Data properties
+###########################################
+
+vod:hasVideoId
+	a owl:DatatypeProperty ;
+ 	rdfs:domain vod:VideoOnDemand ;
+	rdfs:label "videoId"^^xsd:string ;
+ 	rdfs:range xsd:string . 
+
+vod:hasPrice
+	a owl:DatatypeProperty ;
+	rdfs:domain vod:VideoOnDemand ;
+	rdfs:range xsd:float .

@@ -8,34 +8,59 @@
 @prefix prcd: <http://www.techtane.info/phonecommunicationlog.ttl#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
+###########################################
+# Classes
+###########################################
+
 prcd:PhoneCommunicationLog
 	a owl:Class ;
 	rdfs:subClassOf pdta:PersonalData .
+
+###########################################
+# Object properties
+###########################################
 
 prcd:hasContact
 	a owl:ObjectProperty ;
 	rdfs:domain prcd:PhoneCommunicationLog ;
 	rdfs:range foaf:Person .
-
+	
 prcd:hasDuration
 	a owl:ObjectProperty ;
 	rdfs:domain prcd:PhoneCommunicationLog ;
 	rdfs:range time:DurationDescription .
 
-prcd:origin
-	a owl:DataProperty ;
+_:x0 rdf:type owl:Restriction;
+	owl:onProperty prcd:hasContact;
+	owl:minCardinality "0"^^xsd:nonNegativeInteger.
+
+_:x1 rdf:type owl:Restriction;
+	owl:onProperty prcd:hasContact;
+	owl:maxCardinality "1"^^xsd:nonNegativeInteger.
+
+###########################################
+# Data properties
+###########################################
+
+prcd:hasOrigin
+	a owl:DatatypeProperty ;
  	rdfs:domain prcd:PhoneCommunicationLog ;
 	rdfs:label "origin"^^xsd:string ;
  	rdfs:range xsd:string . 
 
-prcd:subscriberNumber
-	a owl:DataProperty ;
+prcd:hasSubscriberNumber
+	a owl:DatatypeProperty ;
  	rdfs:domain prcd:PhoneCommunicationLog ;
 	rdfs:label "subscriberNumber"^^xsd:string ;
  	rdfs:range xsd:string . 
 
-prcd:correspondantNumber
-	a owl:DataProperty ;
+prcd:hasCorrespondantNumber
+	a owl:DatatypeProperty ;
  	rdfs:domain prcd:PhoneCommunicationLog ;
 	rdfs:label "correspondantNumber"^^xsd:string ;
  	rdfs:range xsd:string . 
+
+prcd:isOutbound
+	a owl:DatatypeProperty;
+	rdfs:domain prcd:PhoneCommunicationLog;
+	rdfs:range xsd:boolean.
