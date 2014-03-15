@@ -1,12 +1,38 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix time: <http://www.w3.org/2006/time#> .
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix pdta: <http://www.techtane.info/personaldata.n3#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
 <http://www.techtane.info/personaldata.n3>
       a       owl:Ontology ;
-	owl:imports <http://www.w3.org/2006/time>;
-     owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
+	 owl:imports <http://www.w3.org/2006/time> .
+
+pdta:PersonalData
+	a owl:Class .
+
+pdta:ID
+ a owl:DatatypeProperty ;
+ rdfs:domain pdta:PersonalData ;
+ rdfs:label "ID"^^xsd:string ;
+ rdfs:range xsd:string . 
+
+pdta:Instant
+	a owl:ObjectProperty ;
+	rdfs:domain time:Instant ;
+	rdfs:range time:Instant .
+
+pdta:Owner
+	a owl:ObjectProperty ;
+	rdfs:domain foaf:Person ;
+	rdfs:range foaf:Person .
+
+
+     
+
+
+     
 
