@@ -1,0 +1,43 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix pdta: <http://www.techtane.info/personaldata.ttl#> .
+@prefix bko: <http://www.techtane.info/bankoperation.ttl#> .
+
+
+###########################################
+# Classes
+###########################################
+
+bko:BankOperation
+	a owl:Class ;
+	rdfs:subClassOf pdta:PersonalData .
+
+###########################################
+# Data properties
+###########################################
+
+bko:hasBankAccount
+	a owl:DatatypeProperty ;
+ 	rdfs:domain bko:BankOperation ;
+	rdfs:label "bankAccount"^^xsd:string ;
+ 	rdfs:range xsd:string . 
+
+ bko:hasAmount
+ 	a owl:DatatypeProperty ;
+ 	rdfs:domain bko:BankOperation ;
+ 	rdfs:range xsd:integer . 	
+
+ bko:hasRawTitle
+ 	a owl:DatatypeProperty ;
+ 	rdfs:domain bko:BankOperation ;
+	rdfs:label "rawTitle"^^xsd:string ;
+ 	rdfs:range xsd:string . 
+ bko:hasTitle
+ 	a owl:DatatypeProperty ;
+ 	rdfs:domain bko:BankOperation ;
+	rdfs:label "title"^^xsd:string ;
+ 	rdfs:range xsd:string . 
