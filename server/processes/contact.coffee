@@ -1,16 +1,21 @@
 # build an index
 Contact = require '../models/Contact'
-Link = require '../models/link'
+store = require '../store'
 async = require 'async'
-iterator = require '../lib/iterator'
-indexer = require '../lib/indexer'
 
 module.exports =
 
     index: true,
 
     onCreated: (contact, callback) ->
-        async.each contact.datapoints or [], (dp, cb) ->
-            return callback null unless dp.name in ['tel', 'email']
-            Link.make "#{dp.name}:#{dp.value}", "is", contact, cb
+        return callback null
 
+        graph = store.newGraph()
+        nodeName = store.modelName contact
+        for dp in (contact.datapoints or [])
+            if dp.name is 'tel'
+                graph.add store.makeTriple nodeName, "foaf:phone", "tel:#{dp.value}"
+            else if dp.name is 'email'
+                graph.add store.makeTriple nodeName, "foaf:mbox", "mailto:#{dp.value}"
+
+        store.insert graph, callback

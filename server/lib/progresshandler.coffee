@@ -6,5 +6,4 @@ module.exports.retrieve = (doctype, callback) ->
 
 module.exports.store = (doctype, result, callback) ->
     store[doctype] = result
-    console.log "THIS TOO"
     callback null

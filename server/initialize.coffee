@@ -1,27 +1,29 @@
 progressHandler = require './lib/progresshandler'
 processes = require './processes/index'
 iterator = require './lib/iterator'
+store = require './store'
 async = require 'async'
 
 module.exports = (done) ->
 
-    # foreach doctype we handle
-    doctypes = ['contact']
-    async.eachSeries doctypes, (doctype, cb) ->
+    store.init (err) ->
+        return done err if err
+        # foreach doctype we handle
+        doctypes = ['contact', 'phonecommunicationlog']
+        async.eachSeries doctypes, (doctype, cb) ->
 
-        # retrieve current progress
-        progressHandler.retrieve doctype, (err, store) ->
-            return cb err if err
-
-            # handle current status
-            handleDoctype doctype, store, (err, result) ->
+            # retrieve current progress
+            progressHandler.retrieve doctype, (err, store) ->
                 return cb err if err
 
-                console.log "THIS GET CALLED"
-                # store handled _revs
-                progressHandler.store doctype, result, cb
+                # handle current status
+                handleDoctype doctype, store, (err, result) ->
+                    return cb err if err
 
-    , done
+                    # store handled _revs
+                    progressHandler.store doctype, result, cb
+
+        , done
 
 
 handleDoctype = (doctype, store, callback) ->
