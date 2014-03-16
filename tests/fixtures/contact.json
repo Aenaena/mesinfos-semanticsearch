@@ -1,0 +1,34 @@
+[
+  {
+     "docType": "Contact",
+     "fn": "Germaine Martin",
+     "datapoints": [
+         {
+             "name": "about",
+             "type": "birthday",
+             "value": "15/07/1956",
+             "id": 1
+         },
+         {
+             "name": "tel",
+             "type": "main",
+             "value": "+33465145277",
+             "id": 2
+         }
+     ],
+     "note": "DonnÃ©es complÃ©mentaires sur le contact."
+  },
+  {
+     "docType": "Contact",
+     "fn": "Pierre Jacque",
+     "datapoints": [
+         {
+             "name": "tel",
+             "type": "main",
+             "value": "+33680502419",
+             "id": 2
+         }
+     ],
+     "note": "DonnÃ©es complÃ©mentaires sur le contact."
+  }
+]
