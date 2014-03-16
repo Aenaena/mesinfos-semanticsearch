@@ -1,4 +1,4 @@
-si = require 'search-index'
+# si = require 'search-index'
 i = 0
 
 exports.index = (doc, fields, cb) ->
