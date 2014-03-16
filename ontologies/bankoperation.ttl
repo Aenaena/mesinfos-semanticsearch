@@ -13,31 +13,32 @@
 ###########################################
 
 bko:BankOperation
-	a owl:Class ;
-	rdfs:subClassOf pdta:PersonalData .
+    a owl:Class ;
+    rdfs:subClassOf pdta:PersonalData .
 
 ###########################################
 # Data properties
 ###########################################
 
 bko:hasBankAccount
-	a owl:DatatypeProperty ;
- 	rdfs:domain bko:BankOperation ;
-	rdfs:label "bankAccount"^^xsd:string ;
- 	rdfs:range xsd:string . 
+    a owl:DatatypeProperty ;
+    rdfs:domain bko:BankOperation ;
+    rdfs:label "bankAccount"^^xsd:string ;
+    rdfs:range xsd:string . 
 
- bko:hasAmount
- 	a owl:DatatypeProperty ;
- 	rdfs:domain bko:BankOperation ;
- 	rdfs:range xsd:integer . 	
+bko:hasAmount
+    a owl:DatatypeProperty ;
+    rdfs:domain bko:BankOperation ;
+    rdfs:range xsd:integer .    
 
- bko:hasRawTitle
- 	a owl:DatatypeProperty ;
- 	rdfs:domain bko:BankOperation ;
-	rdfs:label "rawTitle"^^xsd:string ;
- 	rdfs:range xsd:string . 
- bko:hasTitle
- 	a owl:DatatypeProperty ;
- 	rdfs:domain bko:BankOperation ;
-	rdfs:label "title"^^xsd:string ;
- 	rdfs:range xsd:string . 
+bko:hasRawTitle
+    a owl:DatatypeProperty ;
+    rdfs:domain bko:BankOperation ;
+    rdfs:label "rawTitle"^^xsd:string ;
+    rdfs:range xsd:string . 
+    
+bko:hasTitle
+    a owl:DatatypeProperty ;
+    rdfs:domain bko:BankOperation ;
+    rdfs:label "title"^^xsd:string ;
+    rdfs:range xsd:string . 

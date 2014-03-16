@@ -8,27 +8,27 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
 <http://www.techtane.info/personaldata.ttl>
-      a       owl:Ontology ;
-	 owl:imports <http://www.w3.org/2006/time> .
+    a owl:Ontology ;
+    owl:imports <http://www.w3.org/2006/time> .
 
 pdta:PersonalData
-	a owl:Class .
+    a owl:Class .
 
 pdta:hasDataId
- a owl:DatatypeProperty ;
- rdfs:domain pdta:PersonalData ;
- rdfs:label "ID"^^xsd:string ;
- rdfs:range xsd:string . 
+    a owl:DatatypeProperty ;
+    rdfs:domain pdta:PersonalData ;
+    rdfs:label "ID"^^xsd:string ;
+    rdfs:range xsd:string . 
 
 pdta:hasInstant
-	a owl:ObjectProperty ;
-	rdfs:domain pdta:PersonalData ;
-	rdfs:range time:Instant .
+    a owl:ObjectProperty ;
+    rdfs:domain pdta:PersonalData ;
+    rdfs:range time:Instant .
 
 pdta:hasOwner
-	a owl:ObjectProperty ;
-	rdfs:domain pdta:PersonalData ;
-	rdfs:range foaf:Person .
+    a owl:ObjectProperty ;
+    rdfs:domain pdta:PersonalData ;
+    rdfs:range foaf:Person .
 
 
      

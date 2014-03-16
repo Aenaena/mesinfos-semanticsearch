@@ -5,40 +5,51 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix pdta: <http://www.techtane.info/personaldata.ttl#> .
-@prefix vod: <http://www.techtane.info/videoondemand.ttl#> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rcp: <http://www.techtane.info/receipt.ttl#> .
 @prefix dbpedia-owl: <http://dbpedia.org/ontology/> .
+
 
 ###########################################
 # Classes
 ###########################################
 
-vod:VideoOnDemand
+rcp:Receipt
     a owl:Class ;
     rdfs:subClassOf pdta:PersonalData .
+
 
 ###########################################
 # Object properties
 ########################################### 
 
-#Inferred from videoId with Orange VOD website
+# Basic inference from the 'origin' string in dataset
 
-vod:hasMainWork
+rcp:hasOriginCompany
     a owl:ObjectProperty ;
-    rdfs:domain vod:VideoOnDemand ;
-    rdfs:range dbpedia-owl:Work .
+    rdfs:domain rcp:Receipt ;
+    rdfs:range  dbpedia-owl:Company .
+
 
 ###########################################
 # Data properties
 ###########################################
 
-vod:hasVideoId
+rcp:hasArticlesCount
     a owl:DatatypeProperty ;
-    rdfs:domain vod:VideoOnDemand ;
-    rdfs:label "videoId"^^xsd:string ;
-    rdfs:range xsd:string . 
+    rdfs:domain rcp:Receipt ;
+    rdfs:range xsd:integer .
 
-vod:hasPrice
+rcp:hasPointAmount
     a owl:DatatypeProperty ;
-    rdfs:domain vod:VideoOnDemand ;
+    rdfs:domain rcp:Receipt ;
     rdfs:range xsd:float .
+
+rcp:hasPaidAmount
+    a owl:DatatypeProperty ;
+    rdfs:domain rcp:Receipt ;
+    rdfs:range xsd:float .
+
+rcp:isOnline
+    a owl:DatatypeProperty ;
+    rdfs:domain rcp:Receipt ;
+    rdfs:range xsd:boolean .
