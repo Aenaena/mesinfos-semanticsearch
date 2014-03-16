@@ -8,10 +8,10 @@ module.exports =
     index: true,
 
     onCreated: (contact, callback) ->
-        return callback null
-
         graph = store.newGraph()
         nodeName = store.modelName contact
+        graph.add store.makeTriple nodeName, "a", "foaf:Person"
+        graph.add store.makeTriple nodeName, "foaf:name", contact.fn
         for dp in (contact.datapoints or [])
             if dp.name is 'tel'
                 graph.add store.makeTriple nodeName, "foaf:phone", "tel:#{dp.value}"

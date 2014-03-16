@@ -1,7 +1,6 @@
 americano = require 'americano-cozy'
 
-module.exports = Contact = americano.getModel 'Contact',
-    id            : String
+module.exports = Contact = americano.getModel 'contact',
     fn            : String # vCard FullName = display name
     n             : String # vCard Name = splitted
     datapoints    : (x) -> x
@@ -12,6 +11,3 @@ module.exports = Contact = americano.getModel 'Contact',
 
 Contact.batchSize = 100
 Contact.indexFields = ['n', 'fn', 'note', 'tags']
-
-Contact::get2FN = ->
-    return @fn + @fn

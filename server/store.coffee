@@ -1,14 +1,23 @@
-store = null
+module.exports.store = store = null
 rdfstore = require './rdfstore'
+fs = require 'fs'
+path = require 'path'
+async = require 'async'
+ontologyFolder = path.join __dirname, '../ontologies'
 
-module.exports.init = (cb) ->
-    rdfstore.create {persistent:true, name:'myappstore'}, (created) ->
-        store = created
+module.exports.init = (callback) ->
+    rdfstore.create {persistent:true}, (created) ->
+        module.exports.store = store = created
         store.setPrefix 'my', 'https://my.cozy.io/'
+        store.setPrefix 'foaf', 'http://xmlns.com/foaf/0.1/'
         store.setPrefix 'pdta', 'http://www.techtane.info/personaldata.ttl#'
         store.setPrefix 'pcrd', 'http://www.techtane.info/phonecommunicationlog.ttl#'
         store.setPrefix 'time', 'http://www.w3.org/2006/time#'
-        cb()
+        async.each fs.readdirSync(ontologyFolder), (ontologyfile, cb) ->
+            turtle = fs.readFileSync path.join ontologyFolder, ontologyfile
+            store.load 'text/turtle', turtle.toString('utf8'), (success, results) ->
+                cb unless success then new Error(results)
+        , callback
 
 module.exports.modelName = (model) -> "my:#{model._id}"
 
@@ -25,7 +34,7 @@ module.exports.insert = (graph, cb) -> store.insert graph, cb
 
 module.exports.addDuration = (graph, model, units, count) ->
     name = module.exports.modelName model
-    graph.add makeTriple name, "hasDuration", "#{name}.duration"
+    graph.add makeTriple name, "time:hasDuration", "#{name}.duration"
     graph.add makeTriple "#{name}.duration", "a", "time:DurationDescription"
     graph.add makeTriple "#{name}.duration", "time:#{units}", count
 

@@ -42,6 +42,35 @@ describe "Initializer", ->
         initialize = require "../server/initialize"
         initialize done
 
+    it "Sparkles", (done) ->
+        store = require('../server/store').store
+            # PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\
+            # PREFIX : <http://example.org/>\
+
+        store.graph (success, graph) ->
+            graph.triples.forEach (t) ->
+                console.log t.subject.nominalValue, t.predicate.nominalValue, t.object.nominalValue
+
+            query = """
+                PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                PREFIX pcrd: <http://www.techtane.info/phonecommunicationlog.ttl#>
+                PREFIX time: <http://www.w3.org/2006/time#>
+                SELECT ?contact ?duration
+                WHERE {
+                    ?contact <a> foaf:Person.
+                    ?contact foaf:phone ?tel.
+                    ?log <a> pcrd:PhoneCommunicationLog.
+                    ?log pcrd:hasCorrespondantNumber ?tel.
+                    ?log time:hasDuration ?durationObj.
+                    ?durationObj time:seconds ?duration.
+                }
+            """
+
+            store.execute query, (success, results) ->
+                console.log success, results
+            done()
+
+
 describe "Search", ->
 
     it "works", (done) ->

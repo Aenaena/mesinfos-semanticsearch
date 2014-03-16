@@ -14,7 +14,8 @@ module.exports =
         graph = store.newGraph()
         date = new Date(com.timestamp)
         nodeName = store.modelName com
-        graph.add store.makeTriple nodeName, "a", "pdta:PhoneCommunication"
+        graph.add store.makeTriple nodeName, "a", "pcrd:PhoneCommunicationLog"
+        graph.add store.makeTriple nodeName, "pcrd:hasCorrespondantNumber", "tel:+#{com.correspondantNumber}"
         store.addDuration graph, com, "seconds", com.chipCount
         # store.addDatetime graph, com, date
         store.insert graph, callback
