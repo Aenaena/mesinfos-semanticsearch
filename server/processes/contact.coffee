@@ -1,5 +1,5 @@
 # build an index
-Contact = require '../models/Contact'
+Contact = require '../models/contact'
 store = require '../store'
 async = require 'async'
 

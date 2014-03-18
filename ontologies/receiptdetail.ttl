@@ -1,0 +1,53 @@
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix pdta: <http://www.techtane.info/personaldata.ttl#> .
+@prefix rcp: <http://www.techtane.info/receipt.ttl#> .
+@prefix rcpd: <http://www.techtane.info/receiptdetail.ttl#> .
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/> .
+
+
+###########################################
+# Classes
+###########################################
+
+rcpd:ReceiptDetail
+    a owl:Class .
+# Not sure
+#    rdfs:subClassOf pdta:PersonalData .
+
+
+###########################################
+# Data properties
+###########################################
+
+rcpd:hasArticle
+    a owl:DatatypeProperty ;
+    rdfs:domain rcpd:ReceiptDetail ;
+    rdfs:label "article"^^xsd:string ;
+    rdfs:range xsd:string .
+
+rcpd:hasQuantity
+    a owl:DatatypeProperty ;
+    rdfs:domain rcpd:ReceiptDetail ;
+    rdfs:range xsd:integer .
+
+rcpd:hasPrice
+    a owl:DatatypeProperty ;
+    rdfs:domain rcpd:ReceiptDetail ;
+    rdfs:range xsd:float .
+
+rcpd:hasBarcode
+    a owl:DatatypeProperty ;
+    rdfs:domain rcpd:ReceiptDetail ;
+    rdfs:label "barcode"^^xsd:string ;
+    rdfs:range xsd:string .
+
+rcpd:hasFamilyLabel
+    a owl:DatatypeProperty ;
+    rdfs:domain rcpd:ReceiptDetail ;
+    rdfs:label "family"^^xsd:string ;
+    rdfs:range xsd:string .
