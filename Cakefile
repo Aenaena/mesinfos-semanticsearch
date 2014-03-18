@@ -56,6 +56,29 @@ task 'tests', "Run tests #{taskDetails}", (opts) ->
             logger.info "Tests succeeded!"
             process.exit 0
 
+task 'tests-client-e2e', "Run client, test", ->
+    exec "karma start client/test/karma-e2e.conf.js", (err, stdout, stderr) ->
+        console.log stdout
+        if err
+            logger.error "Running mocha caught exception:\n" + err
+            console.log stderr
+            process.exit 1
+        else
+            logger.info "Tests succeeded!"
+            process.exit 0
+
+task 'tests-client', "Run client, test", ->
+    exec "start client/test/karma.conf.js", (err, stdout, stderr) ->
+        console.log stdout
+        if err
+            logger.error "Running mocha caught exception:\n" + err
+            console.log stderr
+            process.exit 1
+        else
+            logger.info "Tests succeeded!"
+            process.exit 0
+
+
 task "coverage", "Generate code coverage of tests", ->
         logger.options.prefix = 'cake:coverage'
         files = walk "tests"
