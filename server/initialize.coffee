@@ -1,34 +1,68 @@
-progressHandler = require './lib/progresshandler'
-processes = require './processes/index'
-iterator = require './lib/iterator'
-store = require './store'
+RDFStorage = require './models/rdf_storage'
+ProgressStore = require './models/progress_store'
 async = require 'async'
+iterator = require './lib/iterator'
+indexer = require './lib/indexer'
 
 module.exports = (done) ->
 
-    store.init (err) ->
+    RDFStorage.init (err, store) ->
         return done err if err
         # foreach doctype we handle
         doctypes = ['contact', 'phonecommunicationlog']
         async.eachSeries doctypes, (doctype, cb) ->
+            console.log "BEGIN DOCTYPE", doctype
 
             # retrieve current progress
-            progressHandler.retrieve doctype, (err, store) ->
+            ProgressStore.byDoctype doctype, (err, progresses) ->
                 return cb err if err
+                console.log "    PROGRESS = ", Object.keys(progresses).length
 
                 # handle current status
-                handleDoctype doctype, store, (err, result) ->
+                handleDoctype store, doctype, progresses, (err, result) ->
                     return cb err if err
 
+                    console.log "    RESULT = ", Object.keys(result).length
+
                     # store handled _revs
-                    progressHandler.store doctype, result, cb
+                    ProgressStore.store doctype, result, cb
 
-        , done
+        , (err) ->
+            return callback err if err
+            console.log "IN callback"
+            RDFStorage.saveChanges done
 
 
-handleDoctype = (doctype, store, callback) ->
+handleDoctype = (store, doctype, progresses, callback) ->
     Model = require "./models/#{doctype}"
-    {onCreated, onUpdated, onDeleted} = processes.makeHandlers doctype
+
+    onCreated = (model, callback) ->
+        async.parallel [
+            (cb) ->
+                return cb null if Model.indexFields.length is 0
+                indexer.index model, Model.indexFields, cb
+            (cb) ->
+                graph = model.toRDFGraph?()
+                return cb null unless model.toRDFGraph
+                store.insert graph, cb
+        ], callback
+
+    onDeleted = (id, callback) ->
+        console.log "ONDELETED, id = ", id
+        async.parallel [
+            (cb) -> indexer.clean id, cb
+            (cb) ->
+                store.node "my:#{id}", (success, graph) ->
+                    return cb new Error("cant get node my:#{id}") unless success
+                    store.delete graph, (success, graph) ->
+                        err = new Error("cant delete node my:#{id}") unless success
+                        cb err
+        ], callback
+
+    onUpdated = (model, callback) ->
+        onDeleted model._id, (err) ->
+            return callback err if err
+            onCreated model, callback
 
     next = {}
     # do not load all models in memory at once
@@ -37,9 +71,9 @@ handleDoctype = (doctype, store, callback) ->
         updated = []
 
         for model in models
-            lastRev = store[model._id]
-            delete store[model._id]
-            if lastRev is null
+            lastRev = progresses[model._id]
+            delete progresses[model._id]
+            unless lastRev?
                 created.push model
             else if lastRev isnt model._rev
                 updated.push model
@@ -55,7 +89,7 @@ handleDoctype = (doctype, store, callback) ->
 
     , (err) ->
         # what's left in the store are models that were here and are gone
-        deleted = (id for id, model of store)
+        deleted = (id for id, model of progresses)
         async.each deleted, onDeleted, (err) ->
             callback null, next
 

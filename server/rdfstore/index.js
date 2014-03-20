@@ -4,7 +4,11 @@ jQuery = window.$ = {fn: {}}
 require('./jquery_ajax_mock')(jQuery, window)
 window.$.ajaxSettings.crossDomain = true
 window.$.ajaxSettings.global = false
-window.localStorage = require('./local_storage_mock');
+
+module.exports = function (local_storage_mock) {
+    window.localStorage = local_storage_mock;
+    return window.rdfstore;
+};
 
 (function() {
 
@@ -32282,5 +32286,4 @@ try {
 } catch(e) { }
 })();
 
-
-module.exports = window.rdfstore
+// a();

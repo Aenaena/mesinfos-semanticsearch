@@ -7,3 +7,5 @@ module.exports = BankOperation = americano.getModel 'bankoperation',
     amount: Number
     raw: String
     dateImport: Date
+
+BankOperation::toRDF
