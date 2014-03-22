@@ -38,8 +38,8 @@ t.addRule /^\w+$/, "contact"
 ## Years
 t.addRule /^\d{4}$/,"year"
 t.addRule /^en(\s)(\d{4})$/,"givenYear"
-t.addRule /^cette(\s)année$/,"currentYear"
-t.addRule /^l'année(\s)dernière$/,"lastYear"
+t.addRule /^cette(\s)annee$/,"currentYear"
+t.addRule /^l'annee(\s)derniere$/,"lastYear"
 ## Months
 ## Days
 ## Specific date : le 17-03-1997
@@ -47,5 +47,5 @@ t.addRule /^(le(\s)\d{1,2})-(\d{1,2})-(\d{4})$/,"specificDate"
 
 
 #t.addRule /^salut$/i, "salut"
-#t.write "coucou Salut\t les \n amis. On m'a dit \"ca va bien?\" "
+
 t.end()
