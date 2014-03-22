@@ -6,7 +6,6 @@ SearchCtl = ($scope, $contacts) ->
     contactAC = (q, cb) ->
         $contacts.find(q, cb)
 
-
     findMatches = (q, cb) ->
         q2 = q.toLowerCase().trim()
 
@@ -37,7 +36,23 @@ SearchCtl = ($scope, $contacts) ->
                 <p>#{item.display}</p>
             """
 
+ContactsService = ($http) ->
+    contacts = $http(method: 'GET', url: 'contacts').then (res) -> res.data
+
+    service = {}
+    service.find: (q, cb) ->
+        contacts.then (contacts) ->
+            for contact in contacts
+
+    return service
+
+
+
+
+
+
 
 angular.module('app.controllers')
-.controller 'SearchCtl', ['$scope', $contacts, SearchCtl]
+.controller 'SearchCtl', ['$scope', '$contacts', SearchCtl]
+.factory '$contacts',
 

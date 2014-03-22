@@ -23,7 +23,7 @@ html(lang='en', ng-app='app')
           a.navbar-brand(href="#") SemSearch
 
         .navbar-collapse.collapse
-          form.navbar-form.navbar-left(role="search")
+          form.navbar-form.navbar-left(role="search", ng-controller='SearchCtrl')
             input.input-large.form-control(type="text", placeholder="Rechercher")
             button.btn.btn-default(type="submit") Rechercher
 

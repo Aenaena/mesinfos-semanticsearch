@@ -22,6 +22,7 @@
   "dependencies": {
     "async": "0.2.10",
     "xmlhttprequest": "1.6.0",
-    "americano-cozy": "0.2.2"
+    "americano-cozy": "0.2.2",
+    "tokenizer": "~1.1.2"
   }
 }

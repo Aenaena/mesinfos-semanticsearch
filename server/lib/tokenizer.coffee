@@ -1,6 +1,6 @@
 Tokenizer = require 'tokenizer'
-t = new Tokenizer((token, match) ->
-  
+module.exports = t = new Tokenizer((token, match) ->
+
   # change the type of the token before emitting it
   "phoneComLog" if match.type is "word" and token is "appel"
   "phoneComLog" if match.type is "word" and token is "appelé"
@@ -15,21 +15,17 @@ t.addRule /^"[^"]*"$/, "citation"
 # the 'maybe citation' rule is here to continue matching until
 # the closing quote is found
 t.addRule /^"[^"]*$/, "maybe citation"
-t.addRule /^(\s)+$/, "whitespace"
-
-# Ponctuation 
-t.addRule /^[',;.:!?-]$/, "ponctuation"
 
 # REFERENCES TO SELF
-t.addRule /^ai-je$/i, "moi"
+t.addRule /^ai-je\s$/i, "moi"
 t.addRule /^m'a$/i, "moi"
 t.addRule /^j'ai$/i, "moi"
 t.addRule /^je$/i, "moi"
 
+# Ponctuation
+
 # REFERENCES TO OTHERS
-t.addRule /^qui$/,"contact"
-# if it's a word and it's not been matched yet it's probably a name
-t.addRule /^\w+$/, "contact"
+t.addRule /^qui\s$/,"contact"
 
 
 # PHONE COMMUNICATIONS
@@ -45,7 +41,13 @@ t.addRule /^l'annee(\s)derniere$/,"lastYear"
 ## Specific date : le 17-03-1997
 t.addRule /^(le(\s)\d{1,2})-(\d{1,2})-(\d{4})$/,"specificDate"
 
+# if it's a word and it's not been matched yet it's probably a name
+t.addRule /^\w+$/, "contact"
+t.addRule /^(\s)+$/, "whitespace"
+t.addRule /^[',;.:!?-]$/, "ponctuation"
 
-#t.addRule /^salut$/i, "salut"
-
-t.end()
+unless module.parent
+    #t.addRule /^salut$/i, "salut"
+    t.on 'token', (tok) -> console.log tok
+    t.write "qui ai-je appele en 2013"
+    t.end()
