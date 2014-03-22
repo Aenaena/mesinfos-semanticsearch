@@ -4,6 +4,7 @@
   "description": "mesinfos-semanticsearch\r =======================",
   "main": "build/server.js",
   "scripts": {
+    "start": "coffee server.coffee",
     "test": "cake tests"
   },
   "repository": {

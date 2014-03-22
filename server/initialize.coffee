@@ -29,7 +29,6 @@ module.exports = (done) ->
 
         , (err) ->
             return callback err if err
-            console.log "IN callback"
             RDFStorage.saveChanges done
 
 
@@ -37,6 +36,7 @@ handleDoctype = (store, doctype, progresses, callback) ->
     Model = require "./models/#{doctype}"
 
     onCreated = (model, callback) ->
+        console.log "ONCREATED, id = ", id
         async.parallel [
             (cb) ->
                 return cb null if Model.indexFields.length is 0

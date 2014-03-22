@@ -10,4 +10,4 @@ module.exports =
     'receiptdetail'         : defaultView
 
     'rdf_storage'           : 'all': (doc) -> emit doc._id, doc
-    'progress_store'        : 'byDoctype': (doc) -> emic doc.refdoctype, doc
+    'progress_store'        : 'byDoctype': (doc) -> emit doc.refdoctype, doc

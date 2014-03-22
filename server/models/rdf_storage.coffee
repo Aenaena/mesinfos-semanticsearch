@@ -22,8 +22,7 @@ RDFStorage::asMockLocalStorage = ->
 RDFStorage.init = (callback) ->
     RDFStorage.request 'all', (err, docs) ->
         return callback err if err
-        RDFStorage.instance = docs?[0]? or new RDFStorage data: {}
-        console.log "HERE"
+        RDFStorage.instance = docs?[0] or new RDFStorage data: {}
         storeMaker = rdfstore RDFStorage.instance.asMockLocalStorage()
         RDFStorage.store = storeMaker.create {persistent:true}, (store) ->
             store.setPrefix 'my', 'https://my.cozy.io/'
