@@ -1,7 +1,12 @@
+ContactsService = ($http) ->
+    find: (q, cb) ->
+        params = doctype: 'contact', q: q
+        $http(method: 'GET', url: 'search', params: params).then cb
+
+
 SearchCtl = ($scope, $contacts) ->
     $scope.query = ''
     $scope.advices = []
-
 
     contactAC = (q, cb) ->
         $contacts.find(q, cb)
@@ -36,23 +41,7 @@ SearchCtl = ($scope, $contacts) ->
                 <p>#{item.display}</p>
             """
 
-ContactsService = ($http) ->
-    contacts = $http(method: 'GET', url: 'contacts').then (res) -> res.data
-
-    service = {}
-    service.find: (q, cb) ->
-        contacts.then (contacts) ->
-            for contact in contacts
-
-    return service
-
-
-
-
-
-
-
-angular.module('app.controllers')
-.controller 'SearchCtl', ['$scope', '$contacts', SearchCtl]
-.factory '$contacts',
+angular.module('semsearch.search-autocomplete')
+.controller('SearchCtl', ['$scope', '$contacts', SearchCtl])
+.factory('$contacts', ContactsService)
 
