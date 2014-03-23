@@ -34,12 +34,12 @@ t.addRule /^ecrit$/,"phoneText"
 ## Temporal helpers
 t.addRule /^ce$/, "currentTemporal"
 t.addRule /^cette$/, "currentTemporal"
+t.addRule /^derniere$/, "lastTemporal"
 
 ## Years
-t.addRule /^\d{4}$/,"year"
+t.addRule /^\d{4}$/,"givenYear"
 t.addRule /^en(\d{4})$/,"givenYear"
-t.addRule /^cette(\s)annee$/,"currentYear"
-t.addRule /^l'annee(\s)derniere$/,"lastYear"
+t.addRule /^annee$/,"year"
 ## Months
 t.addRule /^janvier$/,"month"
 t.addRule /^fevrier$/,"month"
@@ -80,5 +80,7 @@ unless module.parent
     #t.write "qui ai-je appele en 2013"
     #t.write "Quand Pierre m'a appele en juin"
     #t.write "Quand ai-je appele Pierre en juin"
-    t.write "a qui ai-je ecrit cette semaine"
+    #t.write "a qui ai-je ecrit cette semaine"
+    #t.write "a qui ai-je ecrit l'annee derniere ?"
+    t.write "qui m'a ecrit cette annee"
     t.end()
