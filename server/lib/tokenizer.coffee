@@ -81,6 +81,6 @@ unless module.parent
     #t.write "Quand Pierre m'a appele en juin"
     #t.write "Quand ai-je appele Pierre en juin"
     #t.write "a qui ai-je ecrit cette semaine"
-    #t.write "a qui ai-je ecrit l'annee derniere ?"
-    t.write "qui m'a ecrit cette annee"
+    t.write "a qui ai-je ecrit l'annee derniere ?"
+    #t.write "qui m'a ecrit cette annee"
     t.end()
