@@ -6,13 +6,14 @@ test = (code, nl) ->
     console.log code, nl
     tokenizer nl, (err, tokens) ->
         console.log "EERORR = ", err
-        console.log code, "TOKENS = ", tokens
-        console.log code, "ABSTRACTED = ", ab = abstracter tokens
-        console.log code, "CONCRETED = ", concretizer ab
+        console.log code, "TOKENS = ", tokens  
+        abstracter tokens, (err, abstracted) ->
+            console.log code, "ABSTRACTED = ", abstracted
+            console.log code, "CONCRETED = ", concretizer abstracted
 
 
-test '1.', "qui ai-je appele en 2013"
-test '2.', "qui ai-je appele en juin"
+#test '1.', "qui ai-je appele en 2013"
+test '2.', "qui ai-je appele l annee derniere"
 test '3.', "qui m'a appele en juin 2014"
 
 
