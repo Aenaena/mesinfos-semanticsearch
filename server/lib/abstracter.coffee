@@ -1,5 +1,7 @@
-module.exports = (tokens) ->
-
+moment = require 'moment'
+moment = new moment()
+module.exports = (tokens, callback) ->
+    
     concrete = []
     abstract = []
     pdta = null
@@ -38,7 +40,51 @@ module.exports = (tokens) ->
             when 'givenYear'
                 abstract.push s: '?x', p: 'time:year', o: tok.content
 
-            when 'month'
+            when 'givenMonth'
                 abstract.push s: '?x', p: 'time:month', o: tok.content
 
-    return {concrete, abstract, pdta}
+            when 'allArticles'
+                concrete.push s: '?receipt', p: 'a', o: 'rcp:Receipt'
+
+            when 'article'
+                concrete.push s: '?receipt', p: 'a', o: 'rcpd:ReceiptDetail'
+
+            when 'float'
+                # Check if it's a price
+                next = tokens[i+1].type
+                if next == 'priceMarker'
+                    abstract.push s: '?x', p: 'xsd:float', o: tok.content
+                #TODO Otherwise it's maybe a duration
+
+            when 'currentTemporal'
+                next = tokens[i+1].type
+                # Check if it's this week
+                if next == 'week'
+                    abstract.push s: '?x', p: 'time:week', o: moment.isoWeek()
+                # Or month
+                else if next == 'month'
+                    abstract.push s: '?x', p: 'time:month', o: moment.month()
+                # Or year
+                else if next == 'year'
+                    abstract.push s: '?x', p: 'time:year', o: moment.year()
+
+            when 'lastTemporal'
+                previous = tokens[i-1].type
+                # Check if it's last week
+                if previous == 'week'
+                    abstract.push s: '?x', p: 'time:week', o: moment.subtract('weeks', 1).isoWeek()
+                # Or last month
+                else if previous == 'month'
+                    abstract.push s: '?x', p: 'time:month', o: moment.subtract('months', 1).month()
+                # Or last year
+                else if previous == 'year'
+                    abstract.push s: '?x', p: 'time:year', o: moment.subtract('years', 1).year()
+
+            when 'specificDate'
+                abstract.push s: '?x', p: 'time:date', o: moment.format('YYYY-MM-DD')
+
+            #when 'wordToEvaluate'
+                # call value checker
+ 
+
+    return callback(null, {concrete, abstract, pdta})

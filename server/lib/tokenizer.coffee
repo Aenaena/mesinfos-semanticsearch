@@ -6,10 +6,10 @@ rules = (t) ->
     #t.addRule /^$/,"rule"
 
     # Maybe useful
-    t.addRule /^"[^"]*"$/, "citation"
+    #t.addRule /^"[^"]*"$/, "citation"
     # the 'maybe citation' rule is here to continue matching until
     # the closing quote is found
-    t.addRule /^"[^"]*$/, "maybe citation"
+    #t.addRule /^"[^"]*$/, "maybe citation"
 
     # REFERENCES TO SELF
     t.addRule /^je$/i, "myself"
@@ -43,18 +43,12 @@ rules = (t) ->
     t.addRule /^contactee$/,"phoneComLog"
     t.addRule /^ecrit$/,"phoneText"
 
-    # RECEIPTS
-    t.addRule /^courses$/, "allArticles"
-    t.addRule /^article$/, "article"
-    # Prix
-    t.addRule /^euros$/, "priceMarker"
-    t.addRule /^euro$/, "priceMarker"
-
-
     # TEMPORAL OBJECTS
     ## Temporal helpers
+    t.addRule /^cette annee$/, "currentTemporal"
     t.addRule /^ce$/, "currentTemporal"
     t.addRule /^cette$/, "currentTemporal"
+    t.addRule /^dernier$/, "lastTemporal"
     t.addRule /^derniere$/, "lastTemporal"
 
     ## Years
@@ -62,22 +56,25 @@ rules = (t) ->
     t.addRule /^en(\d{4})$/,"givenYear"
     t.addRule /^annee$/,"year"
     ## Months
-    t.addRule /^janvier$/,"month"
-    t.addRule /^fevrier$/,"month"
-    t.addRule /^mars$/,"month"
-    t.addRule /^avril/,"month"
-    t.addRule /^mai$/,"month"
-    t.addRule /^juin$/,"month"
-    t.addRule /^juillet$/,"month"
-    t.addRule /^aout$/,"month"
-    t.addRule /^septembre$/,"month"
-    t.addRule /^octobre$/,"month"
-    t.addRule /^novembre$/,"month"
-    t.addRule /^decembre$/,"month"
+    t.addRule /^mois$/, "month"
+    t.addRule /^mois-ci$/, "month"
+    t.addRule /^janvier$/,"givenMonth"
+    t.addRule /^fevrier$/,"givenMonth"
+    t.addRule /^mars$/,"givenMonth"
+    t.addRule /^avril/,"givenMonth"
+    t.addRule /^mai$/,"givenMonth"
+    t.addRule /^juin$/,"givenMonth"
+    t.addRule /^juillet$/,"givenMonth"
+    t.addRule /^aout$/,"givenMonth"
+    t.addRule /^septembre$/,"givenMonth"
+    t.addRule /^octobre$/,"givenMonth"
+    t.addRule /^novembre$/,"givenMonth"
+    t.addRule /^decembre$/,"givenMonth"
     ## Weeks
     t.addRule /^semaine$/, "week"
     ## Days
     ## Minute
+    # TODO check if duration in abstracter.
     t.addRule /^minute$/, "minutes"
     t.addRule /^minutes$/, "minutes"
 
@@ -85,6 +82,15 @@ rules = (t) ->
     t.addRule /^(le(\s)\d{1,2})-(\d{1,2})-(\d{4})$/,"specificDate"
     ## Quand
     t.addRule /^quand$/, "when"
+
+    # RECEIPTS
+    t.addRule /^courses$/, "allArticles"
+    t.addRule /^article$/, "article"
+    # Prix
+    t.addRule /^euros$/, "priceMarker"
+    t.addRule /^euro$/, "priceMarker"
+    # Floats
+    t.addRule /^(?:[1-9]\d*|0)?(?:\.\d+)?$/, "float"
 
     ## BLACKLIST
     t.addRule /^a$/, "blacklist"
