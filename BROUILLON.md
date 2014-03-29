@@ -25,7 +25,21 @@ X a Y
 
 Quand ai-je appelé Pierre ?            ---> [QUAND] [MOI] [APPEL] [PIERRE]
 Quand pierre m'a appelé (en juin) ?    ---> [QUAND] [PIERRE] [APPEL] [MOI] [DATECONSTRAINT:juin] -->
-Qui ai-je appelé en juin ?             ---> [QUI] [MOI] [APPEL] [DATECONSTRAINT:juin] -> [X a person] [Y a phonecomlog] [X ]
+Qui ai-je appelé en juin ?
+---> [QUI] [MYSELF] [APPEL] [givenMonth:juin]
+-->
+    ?person a person
+    ? pdta:isOutbound true
+    X a phonelog
+    Z time:month Juin
+
+
+
+--> +
+    X /time:hasInstant/time:beginInDTD Z
+
+
+--> [X a person] [Y a phonecomlog] [X ]
 
 Qui ai-je contacté en juin ?
 
@@ -40,9 +54,9 @@ STEP 3 ABSTRACT SEMANTIC REPRESENTATION
 A Foaf:Person
 A prcd:PhoneCommunicationLog
 A Foaf:Person of value : me, tokenized as 'toSelf' to cheat a bit
-A Time:Date of value 
+A Time:Date of value
 
-What we want to understand from this is : 
+What we want to understand from this is :
 "Return the value "name" of instances of class Foaf:Person' related to me
 through instances of class prcd:PhoneCommunicationLog WITH VALUE INBOUND and add a constraint
 of class Date:Time and value '2013'."

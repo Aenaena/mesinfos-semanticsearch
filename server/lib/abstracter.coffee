@@ -1,31 +1,44 @@
 module.exports = (tokens) ->
 
-    out = []
+    concrete = []
+    abstract = []
+    pdta = null
 
-    for tok in tokens
+
+    for i in [0..tokens.length-1]
+        tok = tokens[i]
+
         switch tok.type
             when 'who'
-                out.push s: '?x', p: 'a', o: 'foaf:Person' 
+                concrete.push s: '?person', p: 'a', o: 'foaf:Person'
+
             when 'when'
-                out.push s: '?x', p: 'a', o: 'time:Instant'
-            
-            when 'year'
-                out.push s: '?x', p: 'a', o: 'time:Instant'
-            # Other time stuff
-            # References to self
+                concrete.push s: '?instant', p: 'a', o: 'time:Instant'
 
-            when 'wordToEvaluate'
-                # call value checker
-                # value = ?
-                # complex = {}
-                # complex[class] = 
-                # complex[property] = 
-                # out.push complex
+            when 'phoneComLog'
+                pdta = '?log'
+                concrete.push s: '?log', p: 'a', o: 'pcrd:PhoneCommunicationLog'
 
-            #when 'appele'
-                #complex = []
-                #complex.push s: '', p: '', o: 'prcd:PhoneCommunicationLog'
-                #out.push complex
-        
-                # ...
-            
+            when 'phoneCall'
+                pdta = '?log'
+                concrete.push s: '?log', p: 'a', o: 'pcrd:PhoneCommunicationLog'
+                concrete.push s: '?log', p: 'pcrd:ComType', o: 'VOICE'
+
+            when 'phoneText'
+                pdta = '?log'
+                concrete.push s: '?log', p: 'a', o: 'pcrd:PhoneCommunicationLog'
+                concrete.push s: '?log', p: 'pcrd:ComType', o: 'SMS'
+
+            when 'myself'
+                abstract.push s: '?x', p: 'pdta:isOutbound', o:'true'
+
+            when 'toSelf'
+                abstract.push s: '?x', p: 'pdta:isOutbound', o:'false'
+
+            when 'givenYear'
+                abstract.push s: '?x', p: 'time:year', o: tok.content
+
+            when 'month'
+                abstract.push s: '?x', p: 'time:month', o: tok.content
+
+    return {concrete, abstract, pdta}

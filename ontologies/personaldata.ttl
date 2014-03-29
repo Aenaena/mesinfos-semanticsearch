@@ -18,7 +18,12 @@ pdta:hasDataId
     a owl:DatatypeProperty ;
     rdfs:domain pdta:PersonalData ;
     rdfs:label "ID"^^xsd:string ;
-    rdfs:range xsd:string . 
+    rdfs:range xsd:string .
+
+pdta:isOutbound
+    a owl:DatatypeProperty;
+    rdfs:domain pdta:PersonalData;
+    rdfs:range xsd:boolean.
 
 pdta:hasInstant
     a owl:ObjectProperty ;
@@ -31,8 +36,8 @@ pdta:hasOwner
     rdfs:range foaf:Person .
 
 
-     
 
 
-     
+
+
 
