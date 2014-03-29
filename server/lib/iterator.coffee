@@ -4,7 +4,7 @@ async = require 'async'
  # get size models starting from limit
  # bypass DS _rev hiding
 getBatch = (Model, skip, limit, callback) ->
-    Model.rawRequest 'all',
+    Model.rawRequest 'semsearchall',
         skip: skip
         limit: limit
         include_docs: true

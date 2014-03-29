@@ -1,5 +1,4 @@
 americano = require 'americano-cozy'
-rdf = require '../lib/storetools'
 
 module.exports = Receipt = americano.getModel 'receipt',
     'receiptId': String,

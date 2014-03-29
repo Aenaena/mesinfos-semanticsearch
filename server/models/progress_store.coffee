@@ -6,7 +6,7 @@ module.exports = ProgressStore = americano.getModel 'semsearchprogressstore',
 
 ProgressStore.byDoctype = (doctype, callback) ->
     ProgressStore.request 'byDoctype', key: doctype, (err, docs) ->
-        callback err, docs?[0].progresses or {}
+        callback err, docs?[0]?.progresses or {}
 
 ProgressStore.store = (doctype, data, callback) ->
     ProgressStore.request 'byDoctype', key: doctype, (err, docs) ->

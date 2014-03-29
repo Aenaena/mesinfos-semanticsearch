@@ -28,7 +28,7 @@ module.exports = (done) ->
                     ProgressStore.store doctype, result, cb
 
         , (err) ->
-            return callback err if err
+            return done err if err
             RDFStorage.saveChanges done
 
 
@@ -36,27 +36,36 @@ handleDoctype = (store, doctype, progresses, callback) ->
     Model = require "./models/#{doctype}"
 
     onCreated = (model, callback) ->
-        console.log "ONCREATED, id = ", id
+        # console.log "ONCREATED, id = ", model._id
         async.parallel [
             (cb) ->
                 return cb null if Model.indexFields.length is 0
                 indexer.index model, Model.indexFields, cb
             (cb) ->
-                graph = model.toRDFGraph?()
-                return cb null unless model.toRDFGraph
-                store.insert graph, cb
+                graph = (new Model(model)).toRDFGraph RDFStorage.tools
+                return cb null unless graph
+                store.insert graph, (success) ->
+                    return cb new Error('failed to insert') unless success
+                    cb null
         ], callback
 
     onDeleted = (id, callback) ->
-        console.log "ONDELETED, id = ", id
+        # console.log "ONDELETED, id = ", id
+
         async.parallel [
             (cb) -> indexer.clean id, cb
             (cb) ->
-                store.node "my:#{id}", (success, graph) ->
-                    return cb new Error("cant get node my:#{id}") unless success
-                    store.delete graph, (success, graph) ->
-                        err = new Error("cant delete node my:#{id}") unless success
-                        cb err
+                n = store.rdf.resolve("my:#{id}")
+                store.node n, (success, graph) ->
+                    unless success
+                        return cb new Error("cant get node #{JSON.stringify(n)}")
+
+                    return cb null unless graph.triples.length
+
+                    store.delete graph, (success) ->
+                        unless success
+                            return cb new Error("cant delete node my:#{id}")
+                        cb null
         ], callback
 
     onUpdated = (model, callback) ->
@@ -89,6 +98,7 @@ handleDoctype = (store, doctype, progresses, callback) ->
 
     , (err) ->
         # what's left in the store are models that were here and are gone
+        return callback err if err
         deleted = (id for id, model of progresses)
         async.each deleted, onDeleted, (err) ->
             callback null, next

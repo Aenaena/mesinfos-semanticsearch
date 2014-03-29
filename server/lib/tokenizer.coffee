@@ -68,12 +68,12 @@ t.addRule /^ai$/,"blacklist"
 # wording for now
 t.addRule /^\w+$/, "word"
 t.addRule /^(\s)+$/, "whitespace"
-t.ignore /^(\s)+$/, "whitespace"
+t.ignore "whitespace"
 t.addRule /^[',;.:!?-]$/, "ponctuation"
 
 unless module.parent
     #t.addRule /^salut$/i, "salut"
     t.on 'token', (tok) -> console.log tok
     #t.write "qui ai-je appele en 2013"
-    t.write "qui ai-je appele en juin 2014"
+    t.write "qui a appele Romain en juin 2014"
     t.end()

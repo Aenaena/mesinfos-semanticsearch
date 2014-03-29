@@ -1,0 +1,37 @@
+// nib is a powerful lib for stylus that provides cross-browser css3 mixins.
+@import 'nib'
+
+.whatever
+    color: red
+
+.input-large.form-control
+    width: 400px
+
+.navbar-fixed-top + .container
+    margin-top 71px
+
+.card
+    display: block
+    cursor: pointer
+    padding: 4px
+    width: 300px
+    margin-bottom: 20px
+    line-height: 1.42857143
+    background-color: #fff
+    border: 1px solid #ddd
+    border-radius: 4px
+    transition: all .1s ease-in-out
+
+    h3
+        height 34px
+
+
+    &:hover, &.selected
+        text-decoration: none
+        color orange
+        border-color orange
+
+        p
+            -webkit-transition: all .2s ease-in-out
+            transition: all .2s ease-in-out
+            color black

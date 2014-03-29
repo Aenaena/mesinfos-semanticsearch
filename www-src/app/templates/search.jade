@@ -1,0 +1,11 @@
+.container
+  .navbar-header
+    button.navbar-toggle(type="button", data-toggle="collapse", data-target=".navbar-collapse")
+      span.icon-bar
+      span.icon-bar
+      span.icon-bar
+    a.navbar-brand(href="#") SemSearch
+
+  .navbar-collapse.collapse
+    form.navbar-form.navbar-left(role="search", ng-controller='SearchCtrl')
+      input.input-large.form-control(type="text", placeholder="Rechercher")

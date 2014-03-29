@@ -1,5 +1,4 @@
 americano = require 'americano-cozy'
-rdf = require '../lib/storetools'
 
 module.exports = Contact = americano.getModel 'contact',
     fn            : String # vCard FullName = display name
@@ -13,12 +12,13 @@ module.exports = Contact = americano.getModel 'contact',
 Contact.batchSize = 100
 Contact.indexFields = ['n', 'fn', 'note', 'tags']
 
-Contact::toRDFGraph = () ->
-    graph = rdf.newGraph()
-    nodeName = rdf.modelName contact
+Contact::toRDFGraph = (rdf) ->
+    graph = rdf.makeGraph()
+    nodeName = rdf.modelName this
     graph.add rdf.makeTriple nodeName, "a", "foaf:Person"
-    graph.add rdf.makeTriple nodeName, "foaf:name", contact.fn
-    for dp in (contact.datapoints or [])
+    graph.add rdf.makeTriple nodeName, "foaf:name", this.fn
+    # graph.add rdf.makeTriple nodeName, 'rdfs:label', rdf.makeLiteral this.fn
+    for dp in (this.datapoints or [])
         if dp.name is 'tel'
             graph.add rdf.makeTriple nodeName, "foaf:phone", "tel:#{dp.value}"
         else if dp.name is 'email'

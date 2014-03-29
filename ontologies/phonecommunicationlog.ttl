@@ -24,7 +24,7 @@ prcd:hasContact
     a owl:ObjectProperty ;
     rdfs:domain prcd:PhoneCommunicationLog ;
     rdfs:range foaf:Person .
-    
+
 prcd:hasDuration
     a owl:ObjectProperty ;
     rdfs:domain prcd:PhoneCommunicationLog ;
@@ -46,19 +46,19 @@ prcd:hasOrigin
     a owl:DatatypeProperty ;
     rdfs:domain prcd:PhoneCommunicationLog ;
     rdfs:label "origin"^^xsd:string ;
-    rdfs:range xsd:string . 
+    rdfs:range xsd:string .
 
 prcd:hasSubscriberNumber
     a owl:DatatypeProperty ;
     rdfs:domain prcd:PhoneCommunicationLog ;
     rdfs:label "subscriberNumber"^^xsd:string ;
-    rdfs:range xsd:string . 
+    rdfs:range xsd:string .
 
 prcd:hasCorrespondantNumber
     a owl:DatatypeProperty ;
     rdfs:domain prcd:PhoneCommunicationLog ;
     rdfs:label "correspondantNumber"^^xsd:string ;
-    rdfs:range xsd:string . 
+    rdfs:range xsd:string .
 
 prcd:isOutbound
     a owl:DatatypeProperty;

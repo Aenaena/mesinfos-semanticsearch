@@ -1,0 +1,13 @@
+h1 Bienvenue sur L'application SemSearch.
+
+p.status
+    | Veuillez patientez quelques instants.
+    | L'analyseur est en train de lier vos données.
+
+h2 Examples de requêtes
+ul.samples
+    - text = "Qui ai-je appelé en mars ?"
+    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'
+
+    - text = "Quand ai-je reçu un virement de XXXX ?"
+    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'

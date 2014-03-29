@@ -9,6 +9,7 @@ describe "Initializer", ->
     before (done) ->
         @timeout 60000
         require('americano-cozy').configure root, null, done
+
     # before (done) ->
     #     @timeout 60000
     #     require('cozy-fixtures').load
@@ -36,33 +37,34 @@ describe "Initializer", ->
 #             done()
 
 
-#     it "Sparkles", (done) ->
-#         store = require('../server/store').store
-#             # PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\
-#             # PREFIX : <http://example.org/>\
+    it "Sparkles", (done) ->
+        store = require('../server/models/rdf_storage').store
 
-#         store.graph (success, graph) ->
-#             graph.triples.forEach (t) ->
-#                 console.log t.subject.nominalValue, t.predicate.nominalValue, t.object.nominalValue
+        store.graph (success, graph) ->
+            # graph.triples.forEach (t) ->
+                 # console.log t.subject.nominalValue, t.predicate.nominalValue, t.object.nominalValue
 
-#             query = """
-#                 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-#                 PREFIX pcrd: <http://www.techtane.info/phonecommunicationlog.ttl#>
-#                 PREFIX time: <http://www.w3.org/2006/time#>
-#                 SELECT ?contact ?duration
-#                 WHERE {
-#                     ?contact <a> foaf:Person.
-#                     ?contact foaf:phone ?tel.
-#                     ?log <a> pcrd:PhoneCommunicationLog.
-#                     ?log pcrd:hasCorrespondantNumber ?tel.
-#                     ?log time:hasDuration ?durationObj.
-#                     ?durationObj time:seconds ?duration.
-#                 }
-#             """
+            query = """
+                PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                PREFIX pcrd: <http://www.techtane.info/phonecommunicationlog.ttl#>
+                PREFIX time: <http://www.w3.org/2006/time#>
+                SELECT ?contact ?duration ?month
+                WHERE {
+                    ?contact <a> foaf:Person.
+                    ?contact foaf:phone ?tel.
+                    ?log <a> pcrd:PhoneCommunicationLog.
+                    ?log pcrd:hasCorrespondantNumber ?tel.
+                    ?log time:hasInstant ?begin.
+                    ?begin time:inDateTime ?begindtd.
+                    ?begindtd time:month ?month.
+                    ?log time:hasDuration ?durationObj.
+                    ?durationObj time:seconds ?duration.
+                }
+            """
 
-#             store.execute query, (success, results) ->
-#                 console.log success, results
-#             done()
+            store.execute query, (success, results) ->
+                console.log success, results
+            done()
 
 
 # describe "Search", ->

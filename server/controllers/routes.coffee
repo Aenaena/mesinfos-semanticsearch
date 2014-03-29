@@ -1,5 +1,11 @@
-index = require('./index')
+index = require './index'
+semantic = require './semantic'
 
 module.exports =
 
-    'started': index.started
+    'progress': get: index.progress
+
+    'images/:doctype/:id/:file': get: index.image
+
+    'semantic/nlp': get: semantic.executeNLP
+    'semantic/sparql': get: semantic.executeSparql

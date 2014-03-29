@@ -1,5 +1,5 @@
 
-defaultView = 'all': (doc) -> emit doc._id, {_id:doc._id, _rev:doc._rev}
+defaultView = 'semsearchall': (doc) -> emit doc._id, {_id:doc._id, _rev:doc._rev}
 
 module.exports =
 
