@@ -17,5 +17,5 @@ module.exports = class Router extends Backbone.Router
 
     displayView: (view) ->
         @mainView.remove() if @mainView
+        $('body').append view.$el
         @mainView = view.render()
-        $('body').append @mainView.$el

@@ -104,7 +104,7 @@ module.exports = app = {
     Router = require('router');
     this.router = new Router();
     this.header = new SearchView().render();
-    $('body').append(this.header.$el);
+    $('body').empty().append(this.header.$el);
     return Backbone.history.start();
   }
 };
@@ -143,27 +143,49 @@ module.exports = SearchCollection = (function(_super) {
   };
 
   SearchCollection.prototype.parse = function(data) {
-    var date, hour, id, match, models, node, token, _i, _len, _ref1, _ref2;
+    var a, b, date, exist, hour, id, inGroup, link, match, models, node, token, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2;
 
     models = [];
+    this.links = [];
     _ref1 = data.semantic;
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       match = _ref1[_i];
+      inGroup = [];
       for (token in match) {
         node = match[token];
         if (node.token === 'uri') {
           id = node.value.replace('https://my.cozy.io/', '');
-          console.log("THERE", id);
           if (id.substr(0, 8) === 'instant/') {
-            console.log('INSTANT');
             _ref2 = id.substr(8).split('T'), date = _ref2[0], hour = _ref2[1];
             hour = hour.replace(/-/g, ':');
-            models.push(new DateModel(date + 'T' + hour));
+            inGroup.push(new DateModel(date + 'T' + hour));
           } else {
-            models.push(new BaseModel(data.docs[id]));
+            inGroup.push(new BaseModel(data.docs[id]));
           }
         }
       }
+      for (_j = 0, _len1 = inGroup.length; _j < _len1; _j++) {
+        a = inGroup[_j];
+        for (_k = 0, _len2 = inGroup.length; _k < _len2; _k++) {
+          b = inGroup[_k];
+          if (!(a !== b)) {
+            continue;
+          }
+          link = {
+            s: a.cid,
+            o: b.cid
+          };
+          exist = _.findWhere(this.links, link) || _.findWhere(this.links, {
+            o: a.cid,
+            s: b.cid
+          });
+          console.log(link, exist);
+          if (!exist) {
+            this.links.push(link);
+          }
+        }
+      }
+      models = models.concat(inGroup);
     }
     return models;
   };
@@ -354,6 +376,7 @@ module.exports = BaseModel = (function(_super) {
   BaseModel.prototype.getSummary = function() {
     var date, direction, image, _ref1;
 
+    console.log(this.attributes);
     switch (this.get('docType').toLowerCase()) {
       case 'contact':
         image = ((_ref1 = this.get('_attachments')) != null ? _ref1.picture : void 0) ? "images/contact/" + (this.get('_id')) + "/picture" : 'img/contact.png';
@@ -413,7 +436,7 @@ module.exports = DateModel = (function(_super) {
     return {
       title: this.get('value').format('short'),
       image: 'img/date.png',
-      content: ''
+      content: this.get('value').format('{HH}:{mm}')
     };
   };
 
@@ -461,8 +484,8 @@ module.exports = Router = (function(_super) {
     if (this.mainView) {
       this.mainView.remove();
     }
-    this.mainView = view.render();
-    return $('body').append(this.mainView.$el);
+    $('body').append(view.$el);
+    return this.mainView = view.render();
   };
 
   return Router;
@@ -570,6 +593,18 @@ module.exports = CardView = (function(_super) {
     return this.$el.toggleClass('selected');
   };
 
+  CardView.prototype.centerPos = function() {
+    var left, top, _ref1;
+
+    _ref1 = this.$el.position(), left = _ref1.left, top = _ref1.top;
+    left += this.$el.width() / 2;
+    top += this.$el.height() / 2;
+    return {
+      left: left,
+      top: top
+    };
+  };
+
   return CardView;
 
 })(BaseView);
@@ -647,13 +682,64 @@ module.exports = SearchResults = (function(_super) {
     return _ref;
   }
 
-  SearchResults.prototype.className = 'container';
+  SearchResults.prototype.id = 'result-view';
+
+  SearchResults.prototype.className = 'container-fluid';
+
+  SearchResults.prototype.counter = 0;
 
   SearchResults.prototype.itemview = require('./card');
 
   SearchResults.prototype.initialize = function(options) {
     this.collection = new SearchCollection([], options);
+    this.lines = this.createSVG('svg', {});
     return SearchResults.__super__.initialize.apply(this, arguments);
+  };
+
+  SearchResults.prototype.createSVG = function(tagName, attr) {
+    var elem;
+
+    elem = window.document.createElementNS('http://www.w3.org/2000/svg', tagName);
+    return $(elem).attr(attr);
+  };
+
+  SearchResults.prototype.appendView = function(view) {
+    var link, linkTo, lt, me, _i, _len, _ref1, _results;
+
+    view.$el.css({
+      top: 50 + 10 * this.counter++,
+      left: 350 * this.counter
+    });
+    SearchResults.__super__.appendView.apply(this, arguments);
+    _ref1 = this.collection.links;
+    _results = [];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      link = _ref1[_i];
+      linkTo = view.model.cid === link.s ? this.views[link.o] : view.model.cid === link.o ? linkTo = this.views[link.s] : null;
+      if (linkTo) {
+        me = view.centerPos();
+        lt = linkTo.centerPos();
+        _results.push(this.lines.append(this.createSVG('line', {
+          x1: me.left,
+          y1: me.top,
+          x2: lt.left,
+          y2: lt.top,
+          style: 'stroke:#ddd;stroke-width:2'
+        })));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
+  SearchResults.prototype.afterRender = function() {
+    SearchResults.__super__.afterRender.apply(this, arguments);
+    this.$el.height($('body').height());
+    return this.$el.append(this.lines.attr({
+      width: this.$el.width(),
+      height: this.$el.height()
+    }));
   };
 
   return SearchResults;

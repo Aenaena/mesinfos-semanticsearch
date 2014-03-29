@@ -12,17 +12,29 @@ module.exports = class SearchCollection extends Backbone.Collection
 
     parse: (data) ->
         models = []
+        @links = []
         for match in data.semantic
+
+            inGroup = []
             for token, node of match
                 if node.token is 'uri'
                     id = node.value.replace('https://my.cozy.io/', '')
-                    console.log "THERE", id
+                    # console.log id, data.docs[id]
                     if id.substr(0, 8) is 'instant/'
-                        console.log 'INSTANT'
                         [date, hour] = id.substr(8).split('T')
                         hour = hour.replace /-/g, ':'
-                        models.push new DateModel date + 'T' + hour
+                        inGroup.push new DateModel date + 'T' + hour
                     else
-                        models.push new BaseModel data.docs[id]
+                        inGroup.push new BaseModel data.docs[id]
+
+            for a in inGroup then for b in inGroup when a isnt b
+                link = s: a.cid, o: b.cid
+                exist = _.findWhere(@links, link) or _.findWhere @links, o: a.cid, s: b.cid
+                console.log link, exist
+                @links.push link unless exist
+
+
+            models = models.concat inGroup
+
 
         return models

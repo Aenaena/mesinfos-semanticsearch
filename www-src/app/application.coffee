@@ -15,7 +15,7 @@ module.exports = app =
         @router = new Router()
 
         @header = new SearchView().render()
-        $('body').append @header.$el
+        $('body').empty().append @header.$el
 
         Backbone.history.start()
 

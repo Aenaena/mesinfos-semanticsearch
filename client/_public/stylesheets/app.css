@@ -5784,16 +5784,24 @@ button.close {
 }
 /*# sourceMappingURL=bootstrap.css.map */
 
+html,
+body {
+  height: 100%;
+}
 .whatever {
   color: #f00;
 }
 .input-large.form-control {
   width: 400px;
 }
-.navbar-fixed-top + .container {
+.navbar-fixed-top + .container-fluid {
   margin-top: 71px;
 }
+#result-view {
+  position: relative;
+}
 .card {
+  position: absolute;
   display: block;
   cursor: pointer;
   padding: 4px;
@@ -5811,7 +5819,8 @@ button.close {
   transition: all 0.1s ease-in-out;
 }
 .card h3 {
-  height: 34px;
+  margin-top: 10px;
+  height: 24px;
 }
 .card:hover,
 .card.selected {

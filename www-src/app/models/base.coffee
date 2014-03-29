@@ -2,6 +2,7 @@ module.exports = class BaseModel extends Backbone.Model
 
 
     getSummary:  ->
+        console.log @attributes
         switch @get('docType').toLowerCase()
              when 'contact'
 
