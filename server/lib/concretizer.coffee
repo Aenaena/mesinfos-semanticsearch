@@ -1,8 +1,9 @@
-timeIndicator = ['time:year', 'time:month']
+timeIndicator = ['time:year', 'time:month', 'time:week']
 
 pathToDate = (pdta) ->
     switch pdta
         when '?log' then 'time:hasInstant/time:inDateTime/'
+        when '?receipt' then 'time:hasInstant/time:inDateTime/'
             # ...
 module.exports = (triples) ->
 

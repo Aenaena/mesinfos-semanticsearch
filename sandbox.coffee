@@ -1,20 +1,28 @@
-# tokenizer = require './server/lib/tokenizer'
-# abstracter = require './server/lib/abstracter'
-# concretizer = require './server/lib/concretizer'
+tokenizer = require './server/lib/tokenizer'
+abstracter = require './server/lib/abstracter'
+concretizer = require './server/lib/concretizer'
+sparqlbuilder = require './server/lib/sparqlbuilder'
 
-# test = (code, nl) ->
-#     console.log code, nl
-#     tokenizer nl, (err, tokens) ->
-#         console.log "EERORR = ", err
-#         console.log code, "TOKENS = ", tokens
-#         abstracter tokens, (err, abstracted) ->
-#             console.log code, "ABSTRACTED = ", abstracted
-#             console.log code, "CONCRETED = ", concretizer abstracted
+test = (code, nl) ->
+    console.log code, nl
+    tokenizer nl, (err, tokens) ->
+        console.log "EERORR = ", err
+        console.log code, "TOKENS = ", tokens  
+        abstracter tokens, (err, abstracted) ->
+            console.log code, "ABSTRACTED = ", abstracted
+            console.log code, "CONCRETED = ", c = concretizer abstracted
+            console.log sparqlbuilder(c)
+
+#test '1.', "qui m'a appele en 2013"
+#test '2.', "qui ai-je appele l annee derniere
+#test '3.', "qui m'a vire 2000 euros"
+#test '4.', "qui m'a appele la semaine derniere"
+#test '5.', "mes courses de la semaine derniere"
+test '6.', "mes courses du mois dernier"
 
 
-# #test '1.', "qui ai-je appele en 2013"
-# test '2.', "qui ai-je appele l annee derniere"
-# test '3.', "qui m'a appele en juin 2014"
+
+
 
 
     # #t.write
@@ -30,55 +38,48 @@
 
 
 
-RDFStorage = require './server/models/rdf_storage'
-RDFStorage.init ->
-    store = RDFStorage.store
+# RDFStorage = require './server/models/rdf_storage'
+# RDFStorage.init ->
+#     store = RDFStorage.store
 
-    sparql = """
-            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-            PREFIX pcrd: <http://www.techtane.info/phonecommunicationlog.ttl#>
-            PREFIX time: <http://www.w3.org/2006/time#>
-            PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
-            SELECT ?result ?log ?begindtd
-            WHERE {
-                ?result <a> foaf:Person.
-                ?result foaf:phone ?tel.
-                ?log pcrd:hasCorrespondantNumber ?tel.
-                ?log time:hasInstant ?begin.
-                ?begin time:inDateTime ?begindtd.
-                ?begindtd time:month 3 .
-            }
-        """
+#     sparql = """
+#             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+#             PREFIX pcrd: <http://www.techtane.info/phonecommunicationlog.ttl#>
+#             PREFIX time: <http://www.w3.org/2006/time#>
+#             PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
+#             SELECT ?result ?log ?begindtd
+#             WHERE {
+#                 ?result <a> foaf:Person.
+#                 ?result foaf:phone ?tel.
+#                 ?log pcrd:hasCorrespondantNumber ?tel.
+#                 ?log time:hasInstant ?begin.
+#                 ?begin time:inDateTime ?begindtd.
+#                 ?begindtd time:month 3 .
+#             }
+#         """
 
-    query = RDFStorage.store.engine.abstractQueryTree.parseQueryString(sparql)
-    variables = query.units[0].projection.map (x) -> x.value.value
-    console.log 'VARS = ', variables
+#     query = RDFStorage.store.engine.abstractQueryTree.parseQueryString(sparql)
+#     variables = query.units[0].projection.map (x) -> x.value.value
+#     console.log 'VARS = ', variables
 
-    nodes = []
-    links = []
-    edges = query.units[0].pattern.patterns[0].triplesContext.filter((triple) ->
-        triple.subject.token is 'var' and triple.object.token is 'var'
-    ).map (triple) ->
-        nodes.push triple.subject.value unless triple.subject.value in nodes
-        nodes.push triple.object.value unless triple.object.value in nodes
-        s: triple.subject.value, o: triple.object.value
+#     nodes = []
+#     edges = query.units[0].pattern.patterns[0].triplesContext.filter((triple) ->
+#         triple.subject.token is 'var' and triple.object.token is 'var'
+#     ).map (triple) ->
+#         nodes.push triple.subject.value unless triple.subject.value in nodes
+#         nodes.push triple.object.value unless triple.object.value in nodes
+#         s: triple.subject.value, o: triple.object.value
 
-    linkedWith = (v) ->
-        edges.map (e) ->
-            return e.o if e.s is v
-            return e.s if e.o is v
+#     linkedWith = (v) ->
+#         edges.map
+#             return e.o if e.s is v
+#             return e.s if e.o is v
 
-    for node in nodes when node not in variables
-        vars = linkedWith(node).filter (n) -> n in variables
-        if vars.length is 2
-            links.push s: vars[0], o: vars[1]
-        else if vars.length is 3
-            links.push
-                s: vars[0], o: vars[1]
-                s: vars[1], o: vars[2]
-                s: vars[0], o: vars[2]
+#     for node in nodes when node not in variables
+#         console.log "INTERNODE", node
+#         vars = linkedWith(node).filter (n) -> n in variables
+#         console.log "WITH VARS", vars
 
-    console.log links
 
 
 #     # expand

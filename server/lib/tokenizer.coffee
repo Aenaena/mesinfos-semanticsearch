@@ -11,11 +11,12 @@ rules = (t) ->
     # the closing quote is found
     #t.addRule /^"[^"]*$/, "maybe citation"
 
-    # REFERENCES TO SELF
+    # REFERENCES TO SELF AND POSSESSIONS
     t.addRule /^je$/i, "myself"
     t.addRule /^m'a$/i, "toSelf"
     t.addRule /^j'ai$/i, "myself"
     t.addRule /^je$/i, "myself"
+    t.addRule /^mes$/, "my"
 
     # Ponctuation
 
@@ -98,6 +99,8 @@ rules = (t) ->
     t.addRule /^en$/, "blacklist"
     t.addRule /^d$/, "blacklist"
     t.addRule /^de$/, "blacklist"
+    t.addRule /^la$/, "blacklist"
+
 
     # if it's a word and it's not been matched yet it's probably a name
     # wording for now
