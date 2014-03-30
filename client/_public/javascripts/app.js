@@ -143,14 +143,14 @@ module.exports = SearchCollection = (function(_super) {
   };
 
   SearchCollection.prototype.parse = function(data) {
-    var a, b, date, exist, hour, id, inGroup, link, match, models, node, token, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2;
+    var date, dict, hour, id, links, match, model, models, node, token, _i, _len, _ref1, _ref2;
 
     models = [];
-    this.links = [];
+    links = [];
     _ref1 = data.semantic;
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       match = _ref1[_i];
-      inGroup = [];
+      dict = {};
       for (token in match) {
         node = match[token];
         if (node.token === 'uri') {
@@ -158,35 +158,22 @@ module.exports = SearchCollection = (function(_super) {
           if (id.substr(0, 8) === 'instant/') {
             _ref2 = id.substr(8).split('T'), date = _ref2[0], hour = _ref2[1];
             hour = hour.replace(/-/g, ':');
-            inGroup.push(new DateModel(date + 'T' + hour));
+            models.push(model = new DateModel(date + 'T' + hour));
+            dict[token] = model.cid;
           } else {
-            inGroup.push(new BaseModel(data.docs[id]));
+            models.push(model = new BaseModel(data.docs[id]));
+            dict[token] = model.cid;
           }
         }
       }
-      for (_j = 0, _len1 = inGroup.length; _j < _len1; _j++) {
-        a = inGroup[_j];
-        for (_k = 0, _len2 = inGroup.length; _k < _len2; _k++) {
-          b = inGroup[_k];
-          if (!(a !== b)) {
-            continue;
-          }
-          link = {
-            s: a.cid,
-            o: b.cid
-          };
-          exist = _.findWhere(this.links, link) || _.findWhere(this.links, {
-            o: a.cid,
-            s: b.cid
-          });
-          console.log(link, exist);
-          if (!exist) {
-            this.links.push(link);
-          }
-        }
-      }
-      models = models.concat(inGroup);
+      links = links.concat(data.links.map(function(l) {
+        return {
+          s: dict[l.s],
+          o: dict[l.o]
+        };
+      }));
     }
+    this.links = links;
     return models;
   };
 
@@ -590,7 +577,14 @@ module.exports = CardView = (function(_super) {
   };
 
   CardView.prototype.toggleSelected = function(event) {
-    return this.$el.toggleClass('selected');
+    this.$el.toggleClass('selected');
+    if (this.$el.hasClass('selected')) {
+      return this.$el.append($('<div class="more">').text('Plus d\'info').slideDown());
+    } else {
+      return this.$('.more').slideUp(function() {
+        return this.$('.more').remove();
+      });
+    }
   };
 
   CardView.prototype.centerPos = function() {
@@ -704,33 +698,39 @@ module.exports = SearchResults = (function(_super) {
   };
 
   SearchResults.prototype.appendView = function(view) {
-    var link, linkTo, lt, me, _i, _len, _ref1, _results;
+    var _this = this;
 
     view.$el.css({
       top: 50 + 10 * this.counter++,
       left: 350 * this.counter
     });
     SearchResults.__super__.appendView.apply(this, arguments);
-    _ref1 = this.collection.links;
-    _results = [];
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      link = _ref1[_i];
-      linkTo = view.model.cid === link.s ? this.views[link.o] : view.model.cid === link.o ? linkTo = this.views[link.s] : null;
-      if (linkTo) {
-        me = view.centerPos();
-        lt = linkTo.centerPos();
-        _results.push(this.lines.append(this.createSVG('line', {
-          x1: me.left,
-          y1: me.top,
-          x2: lt.left,
-          y2: lt.top,
-          style: 'stroke:#ddd;stroke-width:2'
-        })));
+    return this.collection.links.filter(function(l) {
+      var _ref1;
+
+      return (_ref1 = view.model.cid) === l.s || _ref1 === l.o;
+    }).map(function(l) {
+      if (l.s === view.model.cid) {
+        return l.o;
       } else {
-        _results.push(void 0);
+        return l.s;
       }
-    }
-    return _results;
+    }).forEach(function(cid) {
+      var a, b;
+
+      if (!_this.views[cid]) {
+        return;
+      }
+      a = _this.views[cid].centerPos();
+      b = view.centerPos();
+      return _this.lines.append(_this.createSVG('line', {
+        x1: a.left,
+        y1: a.top,
+        x2: b.left,
+        y2: b.top,
+        style: 'stroke:#ddd;stroke-width:2;'
+      }));
+    });
   };
 
   SearchResults.prototype.afterRender = function() {

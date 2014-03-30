@@ -5799,6 +5799,7 @@ body {
 }
 #result-view {
   position: relative;
+  padding: 0;
 }
 .card {
   position: absolute;

@@ -1,16 +1,29 @@
-# For words which are not directly tokenized we need to check the value
-# because they are INSTANCES
-# Is it a Foaf:Person ? 
-# Is it a place? (geolocalisation)
-# Is it a number? (price tag, complex)
-# We could add dates, but they can be built with tokens only
+indexer = require './indexer'
+store = require('../models/rdg_storage').store
+request = require 'request'
 
-## First step is to detect persons
+# First step is to detect persons
+module.exports = (x, callback) ->
+    findContact x, (err, id) ->
+        return console.log err if err
+        return callback null, id if id
+        findPlace x, (err, found) ->
+            return console.log err if err
+            return callback null, found
 
-## Second step is to detect numbers
 
+findContact = (x, callback) ->
+    indexer.search x, (msg) ->
+        id = msg.hits.filter(
+            (h) -> h.document.docType.toLowerCase() is 'contact'
+        ).map(
+            (h) -> 'my:/#{h.id}'
+        )[0]
+        callback null, 'FILTER(?person = id)'
 
-# we need to return a hash 
-# h = {}
-# h[class] =  which is a triple declaring the class evaluated
-# h[property] = the value which was passed semantized as a triple
+findPlace = (x, callback) ->
+    x = encodeURIComponent x
+    url = "http://nominatim.openstreetmap.org/search/#{x}?format=json"
+    request url, (err, response, body) ->
+        [llat, ulat, llon, ulon] = body[0].boundingbox
+        callback null, 'FILTER(?lat < id)'
