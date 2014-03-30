@@ -13,10 +13,6 @@ module.exports = class CardView extends BaseView
 
     toggleSelected: (event) ->
         @$el.toggleClass 'selected'
-        if @$el.hasClass 'selected'
-            @$el.append $('<div class="more">').text('Plus d\'info').slideDown()
-        else
-            @$('.more').slideUp -> @$('.more').remove()
 
     centerPos: ->
         {left, top} = @$el.position()

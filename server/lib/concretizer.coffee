@@ -29,6 +29,15 @@ module.exports = (triples) ->
 
         triples.subjects.push '?instant'
 
+    if '?receipt' in subjects
+        # we want the instant
+        triples.concrete.push
+            s: '?receipt'
+            o: '?instant'
+            p: 'time:hasInstant/time:inDateTime'
+
+        triples.subjects.push '?instant'
+
 
     if '?log' in subjects and '?person' in subjects
         t = s: '?person', o: '?tel', p: 'foaf:phone'

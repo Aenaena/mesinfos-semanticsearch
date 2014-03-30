@@ -135,9 +135,19 @@ module.exports = SearchCollection = (function(_super) {
   SearchCollection.prototype.model = BaseModel;
 
   SearchCollection.prototype.initialize = function(items, options) {
+    if (options.around) {
+      options.sparql = "PREFIX my: <https://my.cozy.io/>\nSELECT ?linked\nWHERE {\n    {?linked ?p my:" + options.around + " . }\n    UNION\n    {my:" + options.around + " ?p ?linked .}\n}";
+    }
     if (options.query) {
       return this.fetch({
         url: "semantic/nlp?query=" + encodeURIComponent(options.query)
+      });
+    } else if (options.sparql) {
+      return this.fetch({
+        url: "semantic/sparql",
+        method: 'POST',
+        contentType: 'text/sparql',
+        data: options.sparql
       });
     }
   };
@@ -171,6 +181,12 @@ module.exports = SearchCollection = (function(_super) {
           s: dict[l.s],
           o: dict[l.o]
         };
+      }));
+    }
+    if (data.semantic.length === 0) {
+      models.push(new BaseModel({
+        docType: 'error',
+        error: 'No results'
       }));
     }
     this.links = links;
@@ -363,7 +379,6 @@ module.exports = BaseModel = (function(_super) {
   BaseModel.prototype.getSummary = function() {
     var date, direction, image, type, _ref1;
 
-    console.log(this.attributes);
     switch (this.get('docType').toLowerCase()) {
       case 'contact':
         image = ((_ref1 = this.get('_attachments')) != null ? _ref1.picture : void 0) ? "images/contact/" + (this.get('_id')) + "/picture" : 'img/contact.png';
@@ -385,6 +400,21 @@ module.exports = BaseModel = (function(_super) {
           title: this.get('title'),
           image: 'img/bankoperation.png',
           content: type + this.get('amount') + '€'
+        };
+      case 'receipt':
+        return {
+          title: 'Ticket de Caisse',
+          image: 'img/receipt.png'
+        };
+      case 'error':
+        return {
+          image: 'http://placehold.it/64&text=:(',
+          title: this.get('error') || 'Error'
+        };
+      default:
+        return {
+          image: 'http://placehold.it/64&text=?',
+          title: this.get('title') || '???'
         };
     }
   };
@@ -584,14 +614,7 @@ module.exports = CardView = (function(_super) {
   };
 
   CardView.prototype.toggleSelected = function(event) {
-    this.$el.toggleClass('selected');
-    if (this.$el.hasClass('selected')) {
-      return this.$el.append($('<div class="more">').text('Plus d\'info').slideDown());
-    } else {
-      return this.$('.more').slideUp(function() {
-        return this.$('.more').remove();
-      });
-    }
+    return this.$el.toggleClass('selected');
   };
 
   CardView.prototype.centerPos = function() {
@@ -723,30 +746,49 @@ module.exports = SearchResults = (function(_super) {
   };
 
   SearchResults.prototype.appendView = function(view) {
-    var _this = this;
+    var left, links, top, views, _ref1,
+      _this = this;
 
-    view.$el.css({
-      top: 50 + 10 * this.counter++,
-      left: 350 * this.counter
-    });
-    SearchResults.__super__.appendView.apply(this, arguments);
-    return this.collection.links.filter(function(l) {
+    links = this.collection.links.filter(function(l) {
       var _ref1;
 
       return (_ref1 = view.model.cid) === l.s || _ref1 === l.o;
-    }).map(function(l) {
+    });
+    links = links.map(function(l) {
       if (l.s === view.model.cid) {
         return l.o;
       } else {
         return l.s;
       }
-    }).forEach(function(cid) {
+    });
+    views = links.map(function(cid) {
+      return _this.views[cid];
+    }).filter(function(x) {
+      return !!x;
+    });
+    if (views.length) {
+      _ref1 = views[0].$el.position(), top = _ref1.top, left = _ref1.left;
+      left += 350;
+      this.maxLeft = Math.max(left, this.maxLeft);
+      this.$el.width(this.maxLeft + 500);
+    } else {
+      left = 50;
+      this.maxTop = top = this.maxTop + 100;
+      this.$el.height(this.maxTop + 500);
+    }
+    this.$el.append(this.lines.attr({
+      width: this.$el.width(),
+      height: this.$el.height()
+    }));
+    view.$el.css({
+      top: top,
+      left: left
+    });
+    SearchResults.__super__.appendView.apply(this, arguments);
+    return views.forEach(function(linked) {
       var a, b;
 
-      if (!_this.views[cid]) {
-        return;
-      }
-      a = _this.views[cid].centerPos();
+      a = linked.centerPos();
       b = view.centerPos();
       return _this.lines.append(_this.createSVG('line', {
         x1: a.left,
@@ -759,12 +801,9 @@ module.exports = SearchResults = (function(_super) {
   };
 
   SearchResults.prototype.afterRender = function() {
-    SearchResults.__super__.afterRender.apply(this, arguments);
-    this.$el.height($('body').height());
-    return this.$el.append(this.lines.attr({
-      width: this.$el.width(),
-      height: this.$el.height()
-    }));
+    this.maxTop = -50;
+    this.maxLeft = 0;
+    return SearchResults.__super__.afterRender.apply(this, arguments);
   };
 
   return SearchResults;

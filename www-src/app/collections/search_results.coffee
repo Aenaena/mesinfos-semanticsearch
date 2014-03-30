@@ -7,8 +7,28 @@ module.exports = class SearchCollection extends Backbone.Collection
 
     initialize: (items, options) ->
 
+        if options.around
+            options.sparql = """
+                PREFIX my: <https://my.cozy.io/>
+                SELECT ?linked
+                WHERE {
+                    {?linked ?p my:#{options.around} . }
+                    UNION
+                    {my:#{options.around} ?p ?linked .}
+                }
+            """
+
         if options.query
             @fetch url: "semantic/nlp?query=" + encodeURIComponent options.query
+
+        else if options.sparql
+            @fetch
+                url: "semantic/sparql"
+                method: 'POST'
+                contentType: 'text/sparql'
+                data: options.sparql
+
+
 
     parse: (data) ->
         models = []
@@ -32,6 +52,9 @@ module.exports = class SearchCollection extends Backbone.Collection
 
             links = links.concat data.links.map (l) ->
                 s: dict[l.s], o: dict[l.o]
+
+        if data.semantic.length is 0
+            models.push new BaseModel docType: 'error', error: 'No results'
 
         @links = links
 

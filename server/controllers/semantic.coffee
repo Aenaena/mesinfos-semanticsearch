@@ -11,17 +11,26 @@ module.exports =
 
     executeSparql: (req, res, next) ->
 
-        sparql = req.body.query
+        sparql = req.rawBody
 
         query = RDFStorage.store.engine.abstractQueryTree.parseQueryString(sparql)
         variables = query.units[0].projection.map (x) -> x.value.value
         console.log 'VARS = ', variables
 
+        console.log
+
         nodes = []
         links = []
-        edges = query.units[0].pattern.patterns[0].triplesContext.filter((triple) ->
+        #IHAVENOIDEAWHATIAMDOING
+        edges = query.units[0].pattern.patterns[0].triplesContext or
+        query.units[0].pattern.patterns[0].value.reduce (prev, block) ->
+            prev.concat block.patterns[0].triplesContext
+        , []
+
+        edges = edges.filter (triple) ->
             triple.subject.token is 'var' and triple.object.token is 'var'
-        ).map (triple) ->
+
+        edges = edges.map (triple) ->
             nodes.push triple.subject.value unless triple.subject.value in nodes
             nodes.push triple.object.value unless triple.object.value in nodes
             s: triple.subject.value, o: triple.object.value
@@ -76,5 +85,5 @@ module.exports =
                 console.log "CONCRETED = ", c = concretizer abstracted
                 sparql = sparqlbuilder(c, abstracted.subjects, abstracted.filters)
                 console.log "SPARQL = ", sparql
-                try module.exports.executeSparql body:query:sparql, res, next
+                try module.exports.executeSparql rawBody:sparql, res, next
                 catch err then next err
