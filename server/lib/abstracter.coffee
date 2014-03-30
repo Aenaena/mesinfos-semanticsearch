@@ -13,23 +13,23 @@ module.exports = (tokens, callback) ->
 
         switch tok.type
             when 'who'
-                concrete.push s: '?person', p: 'a', o: 'foaf:Person'
+                concrete.push s: '?person', p: '<a>', o: 'foaf:Person'
 
             when 'when'
-                concrete.push s: '?instant', p: 'a', o: 'time:Instant'
+                concrete.push s: '?instant', p: '<a>', o: 'time:Instant'
 
             when 'phoneComLog'
                 pdta = '?log'
-                concrete.push s: '?log', p: 'a', o: 'pcrd:PhoneCommunicationLog'
+                concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
 
             when 'phoneCall'
                 pdta = '?log'
-                concrete.push s: '?log', p: 'a', o: 'pcrd:PhoneCommunicationLog'
+                concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
                 concrete.push s: '?log', p: 'pcrd:ComType', o: 'VOICE'
 
             when 'phoneText'
                 pdta = '?log'
-                concrete.push s: '?log', p: 'a', o: 'pcrd:PhoneCommunicationLog'
+                concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
                 concrete.push s: '?log', p: 'pcrd:ComType', o: 'SMS'
 
             when 'myself'
@@ -46,10 +46,10 @@ module.exports = (tokens, callback) ->
 
             when 'allArticles'
                 pdta = '?receipt'
-                concrete.push s: '?receipt', p: 'a', o: 'rcp:Receipt'
+                concrete.push s: '?receipt', p: '<a>', o: 'rcp:Receipt'
 
             when 'article'
-                concrete.push s: '?receipt', p: 'a', o: 'rcpd:ReceiptDetail'
+                concrete.push s: '?receipt', p: '<a>', o: 'rcpd:ReceiptDetail'
 
             when 'float'
                 # Check if it's a price
