@@ -14,11 +14,13 @@ test = (code, nl) ->
             console.log sparqlbuilder(c)
 
 #test '1.', "qui m'a appele en 2013"
-test '2.', "qui ai-je appele en mars"
+#test '2.', "qui ai-je appele en mars"
 #test '3.', "qui m'a vire 2000 euros"
 #test '4.', "qui m'a appele la semaine derniere"
 #test '5.', "mes courses de la semaine derniere"
 #test '6.', "mes courses du mois dernier"
+test '7.', "virements recus de Pierre en juin"
+
 
 
 

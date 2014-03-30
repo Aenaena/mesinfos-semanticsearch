@@ -3,6 +3,7 @@ module.exports = (concretetriple) ->
 
   
     subjects = findsubjects(concretetriple)
+    console.log "HI", subjects
     constraints = []
     # Find all subjects (select)
     
@@ -17,6 +18,7 @@ module.exports = (concretetriple) ->
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             PREFIX rcp: <http://www.techtane.info/receipt.ttl#>
             PREFIX pdta: <http://www.techtane.info/personaldata.ttl#>
+            PREFIX bko: <http://www.techtane.info/bankoperation.ttl#>
             SELECT #{subjects.join(' ')}
             WHERE {
             #{constraints}.

@@ -52,6 +52,20 @@ module.exports = (tokens, callback) ->
             when 'article'
                 concrete.push s: '?receipt', p: '<a>', o: 'rcpd:ReceiptDetail'
 
+            when 'bankTransfer'
+                pdta = '?bankoperation'
+                concrete.push s: '?bankoperation', p: '<a>', o: 'bko:BankOperation'
+            
+            when 'inbound'
+                previous = tokens[i-1].type
+                if previous == 'bankTransfer'
+                    concrete.push s: '?bankoperation', p: 'pdta:isOutbound', o: 'false'
+
+            when 'outbound'
+                previous = tokens[i-1].type
+                if previous == 'bankTransfer'
+                    concrete.push s: '?bankoperation', p: 'pdta:isOutbound', o: 'true'
+
             when 'float'
                 # Check if it's a price
                 next = tokens[i+1].type
@@ -85,6 +99,8 @@ module.exports = (tokens, callback) ->
 
             when 'specificDate'
                 abstract.push s: '?x', p: 'time:date', o: moment.format('YYYY-MM-DD')
+
+
 
             #when 'wordToEvaluate'
                 # call value checker
