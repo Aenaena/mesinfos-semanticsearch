@@ -1,5 +1,6 @@
 moment = require 'moment'
 moment = new moment()
+moment.lang('fr')
 #valuechecker = require './server/lib/valuechecker'
 module.exports = (tokens, callback) ->
     
@@ -42,7 +43,7 @@ module.exports = (tokens, callback) ->
                 abstract.push s: '?x', p: 'time:year', o: tok.content
 
             when 'givenMonth'
-                abstract.push s: '?x', p: 'time:month', o: moment.month(tok.content)
+                abstract.push s: '?x', p: 'time:month', o: moment.month(tok.content).format('M')
 
             when 'allArticles'
                 pdta = '?receipt'
