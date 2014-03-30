@@ -1,5 +1,6 @@
 moment = require 'moment'
 moment = new moment()
+#valuechecker = require './server/lib/valuechecker'
 module.exports = (tokens, callback) ->
     
     concrete = []
@@ -44,6 +45,7 @@ module.exports = (tokens, callback) ->
                 abstract.push s: '?x', p: 'time:month', o: tok.content
 
             when 'allArticles'
+                pdta = '?receipt'
                 concrete.push s: '?receipt', p: 'a', o: 'rcp:Receipt'
 
             when 'article'

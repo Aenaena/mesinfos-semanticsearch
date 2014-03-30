@@ -9,14 +9,17 @@ module.exports = (concretetriple) ->
 
     # Find all constraints (where)
     constraints = concretetriple.map((e) -> "#{e.s} #{e.p} #{e.o}").join ". \n"
-    
+
     sparql = """ 
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
             PREFIX pcrd: <http://www.techtane.info/phonecommunicationlog.ttl#>
             PREFIX time: <http://www.w3.org/2006/time#>
             PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
+            PREFIX rcp: <http://www.techtane.info/receipt.ttl#>
             SELECT #{subjects.join(' ')}
-            WHERE {#{constraints}}
+            WHERE {
+            #{constraints}.
+            }
             """
 
     return sparql

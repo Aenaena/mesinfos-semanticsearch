@@ -1,6 +1,7 @@
 tokenizer = require './server/lib/tokenizer'
 abstracter = require './server/lib/abstracter'
 concretizer = require './server/lib/concretizer'
+sparqlbuilder = require './server/lib/sparqlbuilder'
 
 test = (code, nl) ->
     console.log code, nl
@@ -9,12 +10,19 @@ test = (code, nl) ->
         console.log code, "TOKENS = ", tokens  
         abstracter tokens, (err, abstracted) ->
             console.log code, "ABSTRACTED = ", abstracted
-            console.log code, "CONCRETED = ", concretizer abstracted
+            console.log code, "CONCRETED = ", c = concretizer abstracted
+            console.log sparqlbuilder(c)
+
+#test '1.', "qui m'a appele en 2013"
+#test '2.', "qui ai-je appele l annee derniere
+#test '3.', "qui m'a vire 2000 euros"
+#test '4.', "qui m'a appele la semaine derniere"
+#test '5.', "mes courses de la semaine derniere"
+test '6.', "mes courses du mois dernier"
 
 
-#test '1.', "qui ai-je appele en 2013"
-test '2.', "qui ai-je appele l annee derniere"
-test '3.', "qui m'a appele en juin 2014"
+
+
 
 
     # #t.write

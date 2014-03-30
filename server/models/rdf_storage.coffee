@@ -4,7 +4,8 @@ fs = require 'fs'
 rdfstore = require '../rdfstore'
 americano = require 'americano-cozy'
 ontologyFolder = path.join __dirname, '../../ontologies'
-
+moment = require 'moment'
+moment = new moment()
 module.exports = RDFStorage = americano.getModel 'rdfstorage',
     'data': (x) -> x
 
@@ -87,6 +88,7 @@ RDFStorage.tools = tools =
         graph.add tools.makeTriple dtdname, "time:unitType", "time:unitSecond"
         graph.add tools.makeTriple dtdname, "time:year", tools.makeInt date.getFullYear()
         graph.add tools.makeTriple dtdname, "time:month", tools.makeInt date.getMonth() + 1
+        graph.add tools.makeTriple dtdname, "time:week", tools.makeInt moment.isoWeek(date)
         graph.add tools.makeTriple dtdname, "time:day", tools.makeInt date.getDate()
         graph.add tools.makeTriple dtdname, "time:dayOfWeek", 'time:' + days[date.getDay()]
         graph.add tools.makeTriple dtdname, "time:hour", tools.makeInt date.getHours()
