@@ -3,7 +3,7 @@ moment = new moment()
 moment.lang('fr')
 #valuechecker = require './server/lib/valuechecker'
 module.exports = (tokens, callback) ->
-    
+
     concrete = []
     abstract = []
     pdta = null
@@ -21,17 +21,17 @@ module.exports = (tokens, callback) ->
 
             when 'phoneComLog'
                 pdta = '?log'
-                concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
+                concrete.push s: '?log', p: '<a>', o: 'prcd:PhoneCommunicationLog'
 
             when 'phoneCall'
                 pdta = '?log'
-                concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
-                #concrete.push s: '?log', p: 'pcrd:ComType', o: 'VOICE'
+                concrete.push s: '?log', p: '<a>', o: 'prcd:PhoneCommunicationLog'
+                #concrete.push s: '?log', p: 'prcd:ComType', o: 'VOICE'
 
             when 'phoneText'
                 pdta = '?log'
-                concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
-                #concrete.push s: '?log', p: 'pcrd:ComType', o: 'SMS'
+                concrete.push s: '?log', p: '<a>', o: 'prcd:PhoneCommunicationLog'
+                #concrete.push s: '?log', p: 'prcd:ComType', o: 'SMS'
 
             when 'myself'
                 abstract.push s: '?x', p: 'pdta:isOutbound', o:'true'
@@ -88,6 +88,6 @@ module.exports = (tokens, callback) ->
 
             #when 'wordToEvaluate'
                 # call value checker
- 
+
 
     return callback(null, {concrete, abstract, pdta})

@@ -30,7 +30,7 @@ RDFStorage.init = (callback) ->
             store.setPrefix 'my', 'https://my.cozy.io/'
             store.setPrefix 'foaf', 'http://xmlns.com/foaf/0.1/'
             store.setPrefix 'pdta', 'http://www.techtane.info/personaldata.ttl#'
-            store.setPrefix 'pcrd', 'http://www.techtane.info/phonecommunicationlog.ttl#'
+            store.setPrefix 'prcd', 'http://www.techtane.info/phonecommunicationlog.ttl#'
             store.setPrefix 'time', 'http://www.w3.org/2006/time#'
             store.setPrefix 'geo', 'http://www.w3.org/2006/time#'
             store.setPrefix 'xsd', 'http://www.w3.org/2001/XMLSchema#'
@@ -59,6 +59,9 @@ RDFStorage.tools = tools =
 
     makeTriple: (o, v, c) ->
         rdf = RDFStorage.store.rdf
+
+        c = rdf.createLiteral c, null, rdf.resolve('xsd:boolean') if c is 'true' or c is 'false'
+
         o = rdf.createNamedNode(o) if typeof o is "string"
         v = rdf.createNamedNode(v) if typeof v is "string"
         c = rdf.createNamedNode(c) if typeof c is "string"
