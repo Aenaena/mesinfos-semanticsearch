@@ -2,7 +2,8 @@ moment = require 'moment'
 async = require 'async'
 moment = new moment()
 moment.lang('fr')
-#valuechecker = require './server/lib/valuechecker'
+valuechecker = require './server/lib/valuechecker'
+
 module.exports = (tokens, callback) ->
 
     concrete = []
@@ -53,6 +54,20 @@ module.exports = (tokens, callback) ->
 
             when 'article'
                 concrete.push s: '?receipt', p: '<a>', o: 'rcpd:ReceiptDetail'
+
+            when 'bankTransfer'
+                pdta = '?bankoperation'
+                concrete.push s: '?bankoperation', p: '<a>', o: 'bko:BankOperation'
+
+            when 'inbound'
+                previous = tokens[i-1].type
+                if previous == 'bankTransfer'
+                    concrete.push s: '?bankoperation', p: 'pdta:isOutbound', o: 'false'
+
+            when 'outbound'
+                previous = tokens[i-1].type
+                if previous == 'bankTransfer'
+                    concrete.push s: '?bankoperation', p: 'pdta:isOutbound', o: 'true'
 
             when 'float'
                 # Check if it's a price

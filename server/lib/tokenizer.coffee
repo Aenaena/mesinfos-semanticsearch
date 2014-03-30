@@ -84,6 +84,16 @@ rules = (t) ->
     ## Quand
     t.addRule /^quand$/, "when"
 
+    # BANK DETAILS
+    t.addRule /^virement$/, "bankTransfer"
+    t.addRule /^virements$/, "bankTransfer"
+    t.addRule /^recus$/, "inbound"
+    t.addRule /^recu$/, "inbound"
+    t.addRule /^envoye$/, "outbound"
+    t.addRule /^envoyes$/, "outbound"
+
+
+
     # RECEIPTS
     t.addRule /^courses$/, "allArticles"
     t.addRule /^article$/, "article"

@@ -5,6 +5,7 @@ pathToDate = (pdta) ->
     switch pdta
         when '?log' then 'time:hasInstant/time:inDateTime/'
         when '?receipt' then 'time:hasInstant/time:inDateTime/'
+        when '?bankoperation' then 'time:hasInstant/time:inDateTime/'
             # ...
 module.exports = (triples) ->
 
