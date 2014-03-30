@@ -10,6 +10,7 @@ module.exports = class SearchResults extends ViewCollection
 
     initialize: (options) ->
         @collection = new SearchCollection [], options
+        @collection.on 'error', -> alert 'Reformulez votre requête.'
         @lines = @createSVG 'svg', {}
         super
 

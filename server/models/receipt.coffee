@@ -31,6 +31,4 @@ Receipt::toRDFGraph = (rdf) ->
     graph.add rdf.makeTriple nodeName, "rcp:hasArticlesCount", rdf.makeInt this.articlesCount
     graph.add rdf.makeTriple nodeName, "rcp:hasPaidAmount", rdf.makeInt this.total
     graph.add rdf.makeTriple nodeName, "rcp:hasOriginCompany", 'dbpedia-fr:Intermarché'
-    # shopid -> position ?
-    # store.addDatetime graph, com, date
     return graph

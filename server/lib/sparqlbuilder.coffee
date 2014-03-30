@@ -1,8 +1,7 @@
 findsubjects = require './findsubjects'
-module.exports = (concretetriple, filters) ->
+module.exports = (concretetriple, variables, filters) ->
 
 
-    subjects = findsubjects(concretetriple)
     constraints = []
     filters ?= ''
     # Find all subjects (select)
@@ -19,7 +18,7 @@ module.exports = (concretetriple, filters) ->
             PREFIX rcp: <http://www.techtane.info/receipt.ttl#>
             PREFIX pdta: <http://www.techtane.info/personaldata.ttl#>
             PREFIX bko: <http://www.techtane.info/bankoperation.ttl#>
-            SELECT #{subjects.join(' ')}
+            SELECT #{variables.join(' ')}
             WHERE {
             #{constraints} .
             #{filters}

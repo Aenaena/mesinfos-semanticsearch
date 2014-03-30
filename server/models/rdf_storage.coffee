@@ -33,6 +33,7 @@ RDFStorage.init = (callback) ->
             store.setPrefix 'prcd', 'http://www.techtane.info/phonecommunicationlog.ttl#'
             store.setPrefix 'time', 'http://www.w3.org/2006/time#'
             store.setPrefix 'geo', 'http://www.w3.org/2006/time#'
+            store.setPrefix 'bko', 'http://www.techtane.info/bankoperation.ttl#'
             store.setPrefix 'xsd', 'http://www.w3.org/2001/XMLSchema#'
             RDFStorage.loadOntologies store, (err) ->
                 callback err, store

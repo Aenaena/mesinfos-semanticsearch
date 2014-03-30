@@ -45,6 +45,7 @@ module.exports = (tokens, callback) ->
                 abstract.push s: '?x', p: 'time:year', o: tok.content
 
             when 'givenMonth'
+                tok.content = 'août' if tok.content is 'aout'
                 abstract.push s: '?x', p: 'time:month', o: moment.month(tok.content).format('M')
 
             when 'allArticles'

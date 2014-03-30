@@ -12,9 +12,10 @@ module.exports = start = (options, cb) ->
 
         app.is_init = false
         console.log "server started"
-        init ->
+        init (err) ->
             app.is_init = true
             console.log "init done"
+            console.log err
 
         cb?(null, app, server)
 

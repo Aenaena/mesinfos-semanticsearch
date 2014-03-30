@@ -1,3 +1,8 @@
+# moment = require 'moment'
+# moment = moment()
+# moment.month('august').format('M')
+
+
 tokenizer = require './server/lib/tokenizer'
 abstracter = require './server/lib/abstracter'
 concretizer = require './server/lib/concretizer'
@@ -7,7 +12,7 @@ test = (code, nl) ->
     console.log code, nl
     tokenizer nl, (err, tokens) ->
         console.log "EERORR = ", err
-        console.log code, "TOKENS = ", tokens  
+        console.log code, "TOKENS = ", tokens
         abstracter tokens, (err, abstracted) ->
             console.log code, "ABSTRACTED = ", abstracted
             console.log code, "CONCRETED = ", c = concretizer abstracted

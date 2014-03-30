@@ -4,7 +4,7 @@ module.exports = class BaseModel extends Backbone.Model
     getSummary:  ->
         console.log @attributes
         switch @get('docType').toLowerCase()
-             when 'contact'
+            when 'contact'
 
                 image = if @get('_attachments')?.picture then "images/contact/#{@get('_id')}/picture"
                 else 'img/contact.png'
@@ -12,7 +12,7 @@ module.exports = class BaseModel extends Backbone.Model
                 title: @get 'fn'
                 image: image
 
-             when 'phonecommunicationlog'
+            when 'phonecommunicationlog'
                 date = Date.create @get 'timestamp'
 
                 direction = if @get('direction') is 'OUTGOING' then 'sortant'
@@ -21,6 +21,15 @@ module.exports = class BaseModel extends Backbone.Model
                 title: 'Appel ' + direction
                 image: 'img/phonecalllog.png'
                 content: formatDuration @get 'chipCount'
+
+            when 'bankoperation'
+
+                type = if @get('amount') < 0 then 'Débit : ' else 'Crédit : '
+
+                title: @get('title')
+                image: 'img/bankoperation.png'
+                content: type + @get('amount') + '€'
+
 
 
 formatDuration = (seconds) ->

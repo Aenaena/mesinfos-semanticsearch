@@ -361,7 +361,7 @@ module.exports = BaseModel = (function(_super) {
   }
 
   BaseModel.prototype.getSummary = function() {
-    var date, direction, image, _ref1;
+    var date, direction, image, type, _ref1;
 
     console.log(this.attributes);
     switch (this.get('docType').toLowerCase()) {
@@ -378,6 +378,13 @@ module.exports = BaseModel = (function(_super) {
           title: 'Appel ' + direction,
           image: 'img/phonecalllog.png',
           content: formatDuration(this.get('chipCount'))
+        };
+      case 'bankoperation':
+        type = this.get('amount') < 0 ? 'Débit : ' : 'Crédit : ';
+        return {
+          title: this.get('title'),
+          image: 'img/bankoperation.png',
+          content: type + this.get('amount') + '€'
         };
     }
   };
@@ -520,7 +527,7 @@ buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "Quand ai-je reçu un virement de Germaine ?"
+ text = "virement recu de Germaine ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
@@ -701,6 +708,9 @@ module.exports = SearchResults = (function(_super) {
 
   SearchResults.prototype.initialize = function(options) {
     this.collection = new SearchCollection([], options);
+    this.collection.on('error', function() {
+      return alert('Reformulez votre requête.');
+    });
     this.lines = this.createSVG('svg', {});
     return SearchResults.__super__.initialize.apply(this, arguments);
   };

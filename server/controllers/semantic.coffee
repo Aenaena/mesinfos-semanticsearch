@@ -26,6 +26,8 @@ module.exports =
             nodes.push triple.object.value unless triple.object.value in nodes
             s: triple.subject.value, o: triple.object.value
 
+        links = links.concat edges
+
         linkedWith = (v) -> edges.map (e) ->
             return e.o if e.s is v
             return e.s if e.o is v
@@ -72,7 +74,7 @@ module.exports =
             abstracter tokens, (err, abstracted) ->
                 console.log "ABSTRACTED = ", abstracted
                 console.log "CONCRETED = ", c = concretizer abstracted
-                sparql = sparqlbuilder(c)
+                sparql = sparqlbuilder(c, abstracted.subjects, abstracted.filters)
                 console.log "SPARQL = ", sparql
-
-                module.exports.executeSparql body:query:sparql, res, next
+                try module.exports.executeSparql body:query:sparql, res, next
+                catch err then next err

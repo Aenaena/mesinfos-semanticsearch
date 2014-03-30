@@ -2343,7 +2343,6 @@ WebLocalStorageLexicon.Lexicon.prototype.resolveLiteral = function (literal) {
         return(oidCounter[0]);
     } else {
         var fromStorage = this.storage.getItem(this.pointer("literalToOID", literal));
-        console.log("THERE", literal, fromStorage);
         if (fromStorage != null) {
             oidCounter = fromStorage.split(":");
             var oid = parseInt(oidCounter[0]);

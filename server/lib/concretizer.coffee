@@ -9,8 +9,27 @@ pathToDate = (pdta) ->
             # ...
 module.exports = (triples) ->
 
-    subjects = findsubjects(triples.concrete)
-    console.log "HELLO", subjects
+    triples.subjects = subjects = findsubjects(triples.concrete)
+
+    if '?log' in subjects
+        # we want the instant
+        triples.concrete.push
+            s: '?log'
+            o: '?instant'
+            p: 'time:hasInstant/time:inDateTime'
+
+        triples.subjects.push '?instant'
+
+    if '?bankoperation' in subjects
+        # we want the instant
+        triples.concrete.push
+            s: '?bankoperation'
+            o: '?instant'
+            p: 'time:hasInstant/time:inDateTime'
+
+        triples.subjects.push '?instant'
+
+
     if '?log' in subjects and '?person' in subjects
         t = s: '?person', o: '?tel', p: 'foaf:phone'
         c = s: '?log', o: '?tel', p: 'prcd:hasCorrespondantNumber'
