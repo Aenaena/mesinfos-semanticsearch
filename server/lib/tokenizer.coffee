@@ -33,8 +33,6 @@ rules = (t) ->
     t.addRule /^passe$/, "did"
     t.addRule /^fait$/, "did"
 
-
-
     # PHONE COMMUNICATIONS
     t.addRule /^appele$/,"phoneCall"
     t.addRule /^appelee$/,"phoneCall"
@@ -92,8 +90,6 @@ rules = (t) ->
     t.addRule /^envoye$/, "outbound"
     t.addRule /^envoyes$/, "outbound"
 
-
-
     # RECEIPTS
     t.addRule /^courses$/, "allArticles"
     t.addRule /^article$/, "article"
@@ -102,6 +98,29 @@ rules = (t) ->
     t.addRule /^euro$/, "priceMarker"
     # Floats
     t.addRule /^(?:[1-9]\d*|0)?(?:\.\d+)?$/, "float"
+
+    # VOD : we treat everything as a video, be it a movie, tv show etc
+    t.addRule /^film$/, "video"
+    t.addRule /^films$/, "video"
+    t.addRule /^serie$/, "video"
+    t.addRule /^series$/, "video"
+    t.addRule /^video$/, "video"
+    t.addRule /^videos$/, "video"
+    t.addRule /^VOD$/, "video"
+    t.addRule /^telefilm$/, "video"
+
+    ## VOD actions
+
+    t.addRule /^regarde$/, "watched"
+    t.addRule /^regardes$/, "watched"
+    t.addRule /^regardee$/, "watched"
+    t.addRule /^regardees$/, "watched"
+    t.addRule /^vu$/, "watched"
+    t.addRule /^vus$/, "watched"
+    t.addRule /^vue$/, "watched"
+    t.addRule /^vues$/, "watched"
+
+
 
     ## BLACKLIST
     t.addRule /^a$/, "blacklist"
