@@ -13,11 +13,11 @@ module.exports =
 
         sparql = req.rawBody
 
+        console.log sparql
+
         query = RDFStorage.store.engine.abstractQueryTree.parseQueryString(sparql)
         variables = query.units[0].projection.map (x) -> x.value.value
         console.log 'VARS = ', variables
-
-        console.log
 
         nodes = []
         links = []

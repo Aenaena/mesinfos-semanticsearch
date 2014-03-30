@@ -24,7 +24,7 @@ module.exports = (tokens, callback) ->
 
             when 'phoneComLog'
                 pdta = '?log'
-                concrete.push s: '?log', p: '<a>', o: 'prcd:PhoneCommunicationLog'
+                concrete.push s: '?log', p: '<a>/rdfs:subClassOf', o: 'prcd:PhoneCommunicationLog'
 
             when 'phoneCall'
                 pdta = '?log'
@@ -63,11 +63,15 @@ module.exports = (tokens, callback) ->
                 previous = tokens[i-1].type
                 if previous == 'bankTransfer'
                     concrete.push s: '?bankoperation', p: 'pdta:isOutbound', o: 'false'
+                else
+                    abstract.push s: '?x', p: 'pdta:isOutbound', o: 'false'
 
             when 'outbound'
                 previous = tokens[i-1].type
                 if previous == 'bankTransfer'
                     concrete.push s: '?bankoperation', p: 'pdta:isOutbound', o: 'true'
+                else
+                    abstract.push s: '?x', p: 'pdta:isOutbound', o: 'false'
 
             when 'float'
                 # Check if it's a price

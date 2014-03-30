@@ -12,9 +12,9 @@ module.exports = class SearchCollection extends Backbone.Collection
                 PREFIX my: <https://my.cozy.io/>
                 SELECT ?linked
                 WHERE {
-                    {?linked ?p my:#{options.around} . }
-                    UNION
-                    {my:#{options.around} ?p ?linked .}
+                    ?linked <a> pdta: PersonalData
+                    ?linked ?p ?other
+                    ?other ?p2 my:#{options.around} .
                 }
             """
 
@@ -31,6 +31,8 @@ module.exports = class SearchCollection extends Backbone.Collection
 
 
     parse: (data) ->
+
+        console.log "DATA", data
         models = []
         links = []
 

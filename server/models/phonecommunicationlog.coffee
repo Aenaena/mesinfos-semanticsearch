@@ -25,7 +25,10 @@ PhoneCommunicationLog::toRDFGraph = (rdf) ->
     else if this.type is 'SMS-C' then 'prcd:TextMessage'
     else false
 
+
     return false unless klass
+
+    console.log klass
 
     graph = rdf.makeGraph()
     nodeName = rdf.modelName this

@@ -136,7 +136,7 @@ module.exports = SearchCollection = (function(_super) {
 
   SearchCollection.prototype.initialize = function(items, options) {
     if (options.around) {
-      options.sparql = "PREFIX my: <https://my.cozy.io/>\nSELECT ?linked\nWHERE {\n    {?linked ?p my:" + options.around + " . }\n    UNION\n    {my:" + options.around + " ?p ?linked .}\n}";
+      options.sparql = "PREFIX my: <https://my.cozy.io/>\nSELECT ?linked\nWHERE {\n    ?linked <a> pdta: PersonalData\n    ?linked ?p ?other\n    ?other ?p2 my:" + options.around + " .\n}";
     }
     if (options.query) {
       return this.fetch({
@@ -155,6 +155,7 @@ module.exports = SearchCollection = (function(_super) {
   SearchCollection.prototype.parse = function(data) {
     var date, dict, hour, id, links, match, model, models, node, token, _i, _len, _ref1, _ref2;
 
+    console.log("DATA", data);
     models = [];
     links = [];
     _ref1 = data.semantic;
@@ -389,9 +390,16 @@ module.exports = BaseModel = (function(_super) {
       case 'phonecommunicationlog':
         date = Date.create(this.get('timestamp'));
         direction = this.get('direction') === 'OUTGOING' ? 'sortant' : 'entrant';
+        if (this.get('type') === 'VOICE') {
+          type = 'Appel';
+          image = 'img/phonecalllog.png';
+        } else {
+          type = 'SMS';
+          image = 'img/sms.png';
+        }
         return {
-          title: 'Appel ' + direction,
-          image: 'img/phonecalllog.png',
+          title: type + ' ' + direction,
+          image: image,
           content: formatDuration(this.get('chipCount'))
         };
       case 'bankoperation':

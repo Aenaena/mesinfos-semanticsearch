@@ -17,8 +17,15 @@ module.exports = class BaseModel extends Backbone.Model
                 direction = if @get('direction') is 'OUTGOING' then 'sortant'
                 else 'entrant'
 
-                title: 'Appel ' + direction
-                image: 'img/phonecalllog.png'
+                if @get('type') is 'VOICE'
+                    type = 'Appel'
+                    image = 'img/phonecalllog.png'
+                else
+                    type = 'SMS'
+                    image = 'img/sms.png'
+
+                title: type + ' ' + direction
+                image: image
                 content: formatDuration @get 'chipCount'
 
             when 'bankoperation'

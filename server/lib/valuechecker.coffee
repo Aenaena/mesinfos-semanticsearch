@@ -6,18 +6,21 @@ request = require 'request'
 module.exports = (x, callback) ->
     findContact x, (err, id) ->
         return console.log err if err
-        return callback null, id if id
-        findPlace x, (err, found) ->
-            return console.log err if err
-            callback null, found
+        return callback null, id # if id
+        # findPlace x, (err, found) ->
+        #     return console.log err if err
+        #     callback null, found
 
 findContact = (x, callback) ->
     indexer.search x, (err, msg) ->
-        id = msg.hits.filter(
+        if msg.hits.length is 0
+            callback null, ''
+
+        hit = msg.hits.filter(
             (h) -> h.document.docType.toLowerCase() is 'contact'
-        ).map(
-            (h) -> "my:#{h.id}"
         )[0]
+
+        id = "<https://my.cozy.io/#{hit.id}>"
         callback null, '?person = ' + id
 
 # findPlace = (x, callback) ->

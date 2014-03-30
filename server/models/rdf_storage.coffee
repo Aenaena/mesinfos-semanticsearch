@@ -29,6 +29,7 @@ RDFStorage.init = (callback) ->
         RDFStorage.store = storeMaker.create {persistent:true}, (store) ->
             store.setPrefix 'my', 'https://my.cozy.io/'
             store.setPrefix 'foaf', 'http://xmlns.com/foaf/0.1/'
+            store.setPrefix 'rdfs', 'http://www.w3.org/2000/01/rdf-schema#'
             store.setPrefix 'pdta', 'http://www.techtane.info/personaldata.ttl#'
             store.setPrefix 'prcd', 'http://www.techtane.info/phonecommunicationlog.ttl#'
             store.setPrefix 'time', 'http://www.w3.org/2006/time#'
