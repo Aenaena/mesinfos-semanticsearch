@@ -23,13 +23,13 @@ module.exports = Receipt = americano.getModel 'receipt',
 Receipt.batchSize = 100
 Receipt.indexFields = []
 
-Receipt::toRDFGraph = (store) ->
-    graph = rdf.newGraph()
+Receipt::toRDFGraph = (rdf) ->
+    graph = rdf.makeGraph()
     date = new Date(this.timestamp)
     nodeName = rdf.modelName this
     graph.add rdf.makeTriple nodeName, "a", "rcp:Receipt"
-    graph.add rdf.makeTriple nodeName, "rcp:hasArticlesCount", this.articlesCount
-    graph.add rdf.makeTriple nodeName, "rcp:hasPaidAmount", this.total
+    graph.add rdf.makeTriple nodeName, "rcp:hasArticlesCount", rdf.makeInt this.articlesCount
+    graph.add rdf.makeTriple nodeName, "rcp:hasPaidAmount", rdf.makeInt this.total
     graph.add rdf.makeTriple nodeName, "rcp:hasOriginCompany", 'dbpedia-fr:Intermarché'
     # shopid -> position ?
     # store.addDatetime graph, com, date

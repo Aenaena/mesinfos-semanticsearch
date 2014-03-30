@@ -29,5 +29,4 @@ PhoneCommunicationLog::toRDFGraph = (rdf) ->
     rdf.addDuration graph, this, "seconds", this.chipCount
     rdf.addPosition graph, this, this.latitude, this.longitude
     rdf.addDatetime graph, this, new Date(this.timestamp)
-    console.log graph.triples[0..5]
     return graph

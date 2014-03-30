@@ -9,7 +9,7 @@ module.exports = (done) ->
     RDFStorage.init (err, store) ->
         return done err if err
         # foreach doctype we handle
-        doctypes = ['contact', 'phonecommunicationlog']
+        doctypes = ['contact', 'phonecommunicationlog', 'bankoperation', 'receipt', 'receiptdetail']
         async.eachSeries doctypes, (doctype, cb) ->
             console.log "BEGIN DOCTYPE", doctype
 
