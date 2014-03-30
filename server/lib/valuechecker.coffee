@@ -1,5 +1,5 @@
 indexer = require './indexer'
-store = require('../models/rdg_storage').store
+store = require('../models/rdf_storage').store
 request = require 'request'
 
 # First step is to detect persons
@@ -12,13 +12,13 @@ module.exports = (x, callback) ->
             callback null, found
 
 findContact = (x, callback) ->
-    indexer.search x, (msg) ->
+    indexer.search x, (err, msg) ->
         id = msg.hits.filter(
             (h) -> h.document.docType.toLowerCase() is 'contact'
         ).map(
-            (h) -> 'my:/#{h.id}'
+            (h) -> "my:#{h.id}"
         )[0]
-        callback null, '?person = id'
+        callback null, '?person = ' + id
 
 # findPlace = (x, callback) ->
 #     x = encodeURIComponent x

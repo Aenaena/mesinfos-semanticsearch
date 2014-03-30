@@ -1,5 +1,5 @@
 findsubjects = require './findsubjects'
-module.exports = (concretetriple) ->
+module.exports = (concretetriple, filters) ->
 
 
     subjects = findsubjects(concretetriple)

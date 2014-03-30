@@ -2,7 +2,7 @@ moment = require 'moment'
 async = require 'async'
 moment = new moment()
 moment.lang('fr')
-valuechecker = require './server/lib/valuechecker'
+valuechecker = require './valuechecker'
 
 module.exports = (tokens, callback) ->
 
@@ -107,5 +107,5 @@ module.exports = (tokens, callback) ->
                 do (tok) -> ops.push (cb) -> valuechecker tok, cb
 
     async.parallel ops, (err, filters) ->
-        filters = filters.join("\n")
+        filters = filters.map((f) -> "FILTER(#{f})").join("\n")
         callback null, {concrete, abstract, pdta, filters}
