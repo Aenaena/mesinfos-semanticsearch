@@ -1,11 +1,11 @@
+findsubjects = require './findsubjects'
 module.exports = (concretetriple) ->
 
   
-    subjects = []
+    subjects = findsubjects(concretetriple)
     constraints = []
     # Find all subjects (select)
-    for t in concretetriple when t.s[0] is '?' 
-        subjects.push t.s unless t.s in subjects
+    
 
     # Find all constraints (where)
     constraints = concretetriple.map((e) -> "#{e.s} #{e.p} #{e.o}").join ". \n"
