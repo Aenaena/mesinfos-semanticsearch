@@ -1,24 +1,24 @@
-# tokenizer = require './server/lib/tokenizer'
-# abstracter = require './server/lib/abstracter'
-# concretizer = require './server/lib/concretizer'
-# sparqlbuilder = require './server/lib/sparqlbuilder'
+tokenizer = require './server/lib/tokenizer'
+abstracter = require './server/lib/abstracter'
+concretizer = require './server/lib/concretizer'
+sparqlbuilder = require './server/lib/sparqlbuilder'
 
-# test = (code, nl) ->
-#     console.log code, nl
-#     tokenizer nl, (err, tokens) ->
-#         console.log "EERORR = ", err
-#         console.log code, "TOKENS = ", tokens
-#         abstracter tokens, (err, abstracted) ->
-#             console.log code, "ABSTRACTED = ", abstracted
-#             console.log code, "CONCRETED = ", c = concretizer abstracted
-#             console.log sparqlbuilder(c)
+test = (code, nl) ->
+    console.log code, nl
+    tokenizer nl, (err, tokens) ->
+        console.log "EERORR = ", err
+        console.log code, "TOKENS = ", tokens
+        abstracter tokens, (err, abstracted) ->
+            console.log code, "ABSTRACTED = ", abstracted
+            console.log code, "CONCRETED = ", c = concretizer abstracted
+            console.log sparqlbuilder(c, abstracted.filters)
 
-# #test '1.', "qui m'a appele en 2013"
+#test '1.', "qui m'a appele en 2013"
 # test '2.', "qui ai-je appele en mars"
-#test '3.', "qui m'a vire 2000 euros"
-#test '4.', "qui m'a appele la semaine derniere"
-#test '5.', "mes courses de la semaine derniere"
-#test '6.', "mes courses du mois dernier"
+# test '3.', "qui m'a vire 2000 euros"
+# test '4.', "qui m'a appele la semaine derniere"
+# test '5.', "mes courses de la semaine derniere"
+test '6.', "mes virements recu de pierre"
 
 
 
@@ -38,35 +38,35 @@
 
 
 
-RDFStorage = require './server/models/rdf_storage'
-RDFStorage.init ->
-    store = RDFStorage.store
+# RDFStorage = require './server/models/rdf_storage'
+# RDFStorage.init ->
+#     store = RDFStorage.store
 
-    sparql = """
-            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-            PREFIX prcd: <http://www.techtane.info/phonecommunicationlog.ttl#>
-            PREFIX time: <http://www.w3.org/2006/time#>
-            PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
-            PREFIX rcp: <http://www.techtane.info/receipt.ttl#>
-            PREFIX pdta: <http://www.techtane.info/personaldata.ttl#>
-            SELECT ?person ?log
-            WHERE {
-            ?person <a> foaf:Person .
-            ?person foaf:phone ?tel .
-            ?log <a> prcd:PhoneCommunicationLog .
-            ?log prcd:hasCorrespondantNumber ?tel .
-            ?log pdta:isOutbound true .
-            ?log time:hasInstant/time:inDateTime/time:month 3 .
-            }
-        """
-    store.execute sparql, (success, results) ->
-          console.log results
+#     sparql = """
+#             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+#             PREFIX prcd: <http://www.techtane.info/phonecommunicationlog.ttl#>
+#             PREFIX time: <http://www.w3.org/2006/time#>
+#             PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
+#             PREFIX rcp: <http://www.techtane.info/receipt.ttl#>
+#             PREFIX pdta: <http://www.techtane.info/personaldata.ttl#>
+#             SELECT ?person ?log
+#             WHERE {
+#             ?person <a> foaf:Person .
+#             ?person foaf:phone ?tel .
+#             ?log <a> prcd:PhoneCommunicationLog .
+#             ?log prcd:hasCorrespondantNumber ?tel .
+#             ?log pdta:isOutbound true .
+#             ?log time:hasInstant/time:inDateTime/time:month 3 .
+#             }
+#         """
+#     store.execute sparql, (success, results) ->
+#           console.log results
 
-    # store.graph (success, graph) ->
-    #     count = 0
-    #     graph.triples.forEach (t) ->
-    #         if t.object.nominalValue is 'http://www.techtane.info/phonecommunicationlog.ttl#PhoneCommunicationLog'
-    #             console.log t.predicate
-    #             count++
+#     # store.graph (success, graph) ->
+#     #     count = 0
+#     #     graph.triples.forEach (t) ->
+#     #         if t.object.nominalValue is 'http://www.techtane.info/phonecommunicationlog.ttl#PhoneCommunicationLog'
+#     #             console.log t.predicate
+#     #             count++
 
-    #     console.log "COUNT =", count
+#     #     console.log "COUNT =", count

@@ -20,6 +20,7 @@ module.exports = (concretetriple) ->
             SELECT #{subjects.join(' ')}
             WHERE {
             #{constraints} .
+            #{filters}
             }
             """
 

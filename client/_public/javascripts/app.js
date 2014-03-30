@@ -513,14 +513,14 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<h1>Bienvenue sur L\'application SemSearch.</h1><p class="status">Veuillez patientez quelques instants.\nL\'analyseur est en train de lier vos données.</p><h2>Examples de requêtes</h2><ul class="samples">');
- text = "Qui ai-je appelé en mars ?"
+ text = "Qui ai-je appele en mars ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "Quand ai-je reçu un virement de XXXX ?"
+ text = "Quand ai-je reçu un virement de Germaine ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
@@ -649,8 +649,23 @@ module.exports = FolderView = (function(_super) {
 
   FolderView.prototype.template = require('../templates/search');
 
+  FolderView.prototype.events = {
+    'keydown input': 'onKeyDown'
+  };
+
   FolderView.prototype.setContent = function(text) {
     return this.$('input').val(text);
+  };
+
+  FolderView.prototype.onKeyDown = function(event) {
+    var url;
+
+    if (event.which === 13) {
+      url = "search/" + encodeURIComponent(this.$('input').val());
+      return app.router.navigate(url, {
+        trigger: true
+      });
+    }
   };
 
   return FolderView;

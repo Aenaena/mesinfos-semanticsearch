@@ -9,8 +9,7 @@ module.exports = (x, callback) ->
         return callback null, id if id
         findPlace x, (err, found) ->
             return console.log err if err
-            return callback null, found
-
+            callback null, found
 
 findContact = (x, callback) ->
     indexer.search x, (msg) ->
@@ -19,11 +18,11 @@ findContact = (x, callback) ->
         ).map(
             (h) -> 'my:/#{h.id}'
         )[0]
-        callback null, 'FILTER(?person = id)'
+        callback null, '?person = id'
 
-findPlace = (x, callback) ->
-    x = encodeURIComponent x
-    url = "http://nominatim.openstreetmap.org/search/#{x}?format=json"
-    request url, (err, response, body) ->
-        [llat, ulat, llon, ulon] = body[0].boundingbox
-        callback null, 'FILTER(?lat < id)'
+# findPlace = (x, callback) ->
+#     x = encodeURIComponent x
+#     url = "http://nominatim.openstreetmap.org/search/#{x}?format=json"
+#     request url, (err, response, body) ->
+#         [llat, ulat, llon, ulon] = body[0].boundingbox
+#         callback null, 'FILTER(?lat < id)'

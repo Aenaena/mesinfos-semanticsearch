@@ -1,4 +1,5 @@
 moment = require 'moment'
+async = require 'async'
 moment = new moment()
 moment.lang('fr')
 #valuechecker = require './server/lib/valuechecker'
@@ -6,6 +7,7 @@ module.exports = (tokens, callback) ->
 
     concrete = []
     abstract = []
+    ops = []
     pdta = null
 
 
@@ -86,8 +88,9 @@ module.exports = (tokens, callback) ->
             when 'specificDate'
                 abstract.push s: '?x', p: 'time:date', o: moment.format('YYYY-MM-DD')
 
-            #when 'wordToEvaluate'
-                # call value checker
+            when 'wordToEvaluate'
+                do (tok) -> ops.push (cb) -> valuechecker tok, cb
 
-
-    return callback(null, {concrete, abstract, pdta})
+    async.parallel ops, (err, filters) ->
+        filters = filters.join("\n")
+        callback null, {concrete, abstract, pdta, filters}
