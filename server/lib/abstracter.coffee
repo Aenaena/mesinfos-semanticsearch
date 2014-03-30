@@ -25,12 +25,12 @@ module.exports = (tokens, callback) ->
             when 'phoneCall'
                 pdta = '?log'
                 concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
-                concrete.push s: '?log', p: 'pcrd:ComType', o: 'VOICE'
+                #concrete.push s: '?log', p: 'pcrd:ComType', o: 'VOICE'
 
             when 'phoneText'
                 pdta = '?log'
                 concrete.push s: '?log', p: '<a>', o: 'pcrd:PhoneCommunicationLog'
-                concrete.push s: '?log', p: 'pcrd:ComType', o: 'SMS'
+                #concrete.push s: '?log', p: 'pcrd:ComType', o: 'SMS'
 
             when 'myself'
                 abstract.push s: '?x', p: 'pdta:isOutbound', o:'true'
@@ -42,7 +42,7 @@ module.exports = (tokens, callback) ->
                 abstract.push s: '?x', p: 'time:year', o: tok.content
 
             when 'givenMonth'
-                abstract.push s: '?x', p: 'time:month', o: tok.content
+                abstract.push s: '?x', p: 'time:month', o: moment.month(tok.content)
 
             when 'allArticles'
                 pdta = '?receipt'
