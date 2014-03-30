@@ -110,6 +110,11 @@ module.exports = (tokens, callback) ->
             when 'wordToEvaluate'
                 do (tok) -> ops.push (cb) -> valuechecker tok, cb
 
+            when 'video'
+                pdta = '?vod'
+                concrete.push s: '?vod', o: '<a>', p: 'vod:VideoOnDemand'
+
+
     async.parallel ops, (err, filters) ->
         filters = filters.map((f) -> "FILTER(#{f})").join("\n")
         callback null, {concrete, abstract, pdta, filters}

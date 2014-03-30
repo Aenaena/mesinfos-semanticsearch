@@ -6,6 +6,7 @@ pathToDate = (pdta) ->
         when '?log' then 'time:hasInstant/time:inDateTime/'
         when '?receipt' then 'time:hasInstant/time:inDateTime/'
         when '?bankoperation' then 'time:hasInstant/time:inDateTime/'
+        when '?vod' then 'time:hasInstant/time:inDateTime/'
             # ...
 module.exports = (triples) ->
 
@@ -19,6 +20,15 @@ module.exports = (triples) ->
             p: 'time:hasInstant/time:inDateTime'
 
         triples.subjects.push '?instant'
+
+    if '?vod' in subjects
+        # we want the instant
+        triples.concrete.push
+            s: '?vod'
+            o: '?instant'
+            p: 'time:hasInstant/time:inDateTime'
+
+        triples.subjects.push '?vod'
 
     if '?bankoperation' in subjects
         # we want the instant

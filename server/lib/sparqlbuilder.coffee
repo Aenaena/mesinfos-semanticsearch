@@ -19,6 +19,7 @@ module.exports = (concretetriple, variables, filters) ->
             PREFIX pdta: <http://www.techtane.info/personaldata.ttl#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX bko: <http://www.techtane.info/bankoperation.ttl#>
+            PREFIX vod: <http://www.techtane.info/videoondemand.ttl#>
             SELECT #{variables.join(' ')}
             WHERE {
             #{constraints} .
