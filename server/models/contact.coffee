@@ -10,7 +10,7 @@ module.exports = Contact = americano.getModel 'contact',
 
 
 Contact.batchSize = 100
-Contact.indexFields = ['n', 'fn', 'note', 'tags']
+Contact.indexFields = ['n', 'fn']
 
 Contact::toRDFGraph = (rdf) ->
     graph = rdf.makeGraph()

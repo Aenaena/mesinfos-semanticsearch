@@ -39,8 +39,9 @@ handleDoctype = (store, doctype, progresses, callback) ->
         # console.log "ONCREATED, id = ", model._id
         async.parallel [
             (cb) ->
-                return cb null if Model.indexFields.length is 0
-                indexer.index model, Model.indexFields, cb
+                toIndex = ['docType'].concat Model.indexFields
+                return cb null if toIndex.length is 1
+                indexer.index model, toIndex, cb
             (cb) ->
                 graph = (new Model(model)).toRDFGraph RDFStorage.tools
                 return cb null unless graph

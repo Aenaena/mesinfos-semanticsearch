@@ -6,7 +6,36 @@ module.exports =
 
     executeSparql: (req, res, next) ->
 
-        RDFStorage.store.execute req.body.query, (success, results) ->
+        sparql = req.body.query
+
+        query = RDFStorage.store.engine.abstractQueryTree.parseQueryString(sparql)
+        variables = query.units[0].projection.map (x) -> x.value.value
+        console.log 'VARS = ', variables
+
+        nodes = []
+        links = []
+        edges = query.units[0].pattern.patterns[0].triplesContext.filter((triple) ->
+            triple.subject.token is 'var' and triple.object.token is 'var'
+        ).map (triple) ->
+            nodes.push triple.subject.value unless triple.subject.value in nodes
+            nodes.push triple.object.value unless triple.object.value in nodes
+            s: triple.subject.value, o: triple.object.value
+
+        linkedWith = (v) -> edges.map (e) ->
+            return e.o if e.s is v
+            return e.s if e.o is v
+
+        for node in nodes when node not in variables
+            vars = linkedWith(node).filter (n) -> n in variables
+            if vars.length is 2
+                links.push s: vars[0], o: vars[1]
+            else if vars.length is 3
+                links.push
+                    s: vars[0], o: vars[1]
+                    s: vars[1], o: vars[2]
+                    s: vars[0], o: vars[2]
+
+        RDFStorage.store.execute sparql, (success, results) ->
             return next new Error(results) unless success
 
             toFetch = []
@@ -24,7 +53,7 @@ module.exports =
                     cb()
 
             , (err) ->
-                res.send semantic: results, docs: docs
+                res.send links: links, semantic: results, docs: docs
 
     executeNLP: (req, res, next) ->
 

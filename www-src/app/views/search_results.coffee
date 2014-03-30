@@ -17,25 +17,22 @@ module.exports = class SearchResults extends ViewCollection
         elem = window.document.createElementNS('http://www.w3.org/2000/svg', tagName)
         $(elem).attr(attr)
 
+
     appendView: (view) ->
         view.$el.css
             top: 50 + 10*@counter++
             left: 350*@counter
-
         super
-
-        for link in @collection.links
-            linkTo = if view.model.cid is link.s then @views[link.o]
-            else if view.model.cid is link.o then linkTo = @views[link.s]
-            else null
-
-            if linkTo
-                me = view.centerPos()
-                lt = linkTo.centerPos()
-                @lines.append @createSVG 'line',
-                    x1: me.left, y1: me.top
-                    x2:lt.left, y2:lt.top
-                    style:'stroke:#ddd;stroke-width:2'
+        @collection.links.filter((l) -> view.model.cid in [l.s, l.o]
+        ).map((l) -> if l.s is view.model.cid then l.o else l.s
+        ).forEach (cid) =>
+            return unless @views[cid]
+            a = @views[cid].centerPos()
+            b = view.centerPos()
+            @lines.append @createSVG 'line',
+                x1: a.left, y1: a.top
+                x2: b.left, y2: b.top
+                style:'stroke:#ddd;stroke-width:2;'
 
     afterRender: ->
         super
