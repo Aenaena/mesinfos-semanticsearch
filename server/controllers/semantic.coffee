@@ -1,6 +1,11 @@
 RDFStorage = require('../models/rdf_storage')
 async = require 'async'
 dbclient = require('americano-cozy').db.adapter.client
+tokenizer = require '../lib/tokenizer'
+abstracter = require '../lib/abstracter'
+concretizer = require '../lib/concretizer'
+sparqlbuilder = require '../lib/sparqlbuilder'
+
 
 module.exports =
 
@@ -60,22 +65,14 @@ module.exports =
         # SIMULATE QUESTION ASKED IS ALWAYS
         # Qui ai-je appelé en mars ?
         console.log "QUERY = '#{decodeURIComponent req.query.query }'"
-        # sparql = parseNLP
+        nl = decodeURIComponent req.query.query
+        nl = nl.toLowerCase()
+        tokenizer nl, (err, tokens) ->
+            console.log "TOKENS = ", tokens
+            abstracter tokens, (err, abstracted) ->
+                console.log "ABSTRACTED = ", abstracted
+                console.log "CONCRETED = ", c = concretizer abstracted
+                sparql = sparqlbuilder(c)
+                console.log "SPARQL = ", sparql
 
-        sparql = """
-            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-            PREFIX pcrd: <http://www.techtane.info/phonecommunicationlog.ttl#>
-            PREFIX time: <http://www.w3.org/2006/time#>
-            PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
-            SELECT ?result ?log ?begindtd
-            WHERE {
-                ?result <a> foaf:Person.
-                ?result foaf:phone ?tel.
-                ?log pcrd:hasCorrespondantNumber ?tel.
-                ?log time:hasInstant ?begin.
-                ?begin time:inDateTime ?begindtd.
-                ?begindtd time:month 3 .
-            }
-        """
-
-        module.exports.executeSparql body:query:sparql, res, next
+                module.exports.executeSparql body:query:sparql, res, next
