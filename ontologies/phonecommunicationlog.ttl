@@ -16,6 +16,14 @@ prcd:PhoneCommunicationLog
     a owl:Class ;
     rdfs:subClassOf pdta:PersonalData .
 
+prcd:PhoneCall
+    a owl:Class ;
+    rdfs:subClassOf prcd:PhoneCommunicationLog .
+
+prcd:TextMessage
+    a owl:Class ;
+    rdfs:subClassOf prcd:PhoneCommunicationLog .
+
 ###########################################
 # Object properties
 ###########################################

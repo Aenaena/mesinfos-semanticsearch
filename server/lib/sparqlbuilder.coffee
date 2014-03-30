@@ -3,8 +3,8 @@ module.exports = (concretetriple, filters) ->
 
 
     subjects = findsubjects(concretetriple)
-    console.log "HI", subjects
     constraints = []
+    filters ?= ''
     # Find all subjects (select)
 
 

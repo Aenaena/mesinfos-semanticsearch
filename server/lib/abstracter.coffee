@@ -28,12 +28,12 @@ module.exports = (tokens, callback) ->
 
             when 'phoneCall'
                 pdta = '?log'
-                concrete.push s: '?log', p: '<a>', o: 'pcll:PhoneCall'
+                concrete.push s: '?log', p: '<a>', o: 'prcd:PhoneCall'
                 #concrete.push s: '?log', p: 'prcd:ComType', o: 'VOICE'
 
             when 'phoneText'
                 pdta = '?log'
-                concrete.push s: '?log', p: '<a>', o: 'txt:TextMessage'
+                concrete.push s: '?log', p: '<a>', o: 'prcd:TextMessage'
 
             when 'myself'
                 abstract.push s: '?x', p: 'pdta:isOutbound', o:'true'

@@ -20,10 +20,16 @@ PhoneCommunicationLog.batchSize = 100
 PhoneCommunicationLog.indexFields = []
 
 PhoneCommunicationLog::toRDFGraph = (rdf) ->
-    return false unless this.type is 'VOICE'
+
+    klass = if this.type is 'VOICE' then 'prcd:PhoneCall'
+    else if this.type is 'SMS-C' then 'prcd:TextMessage'
+    else false
+
+    return false unless klass
+
     graph = rdf.makeGraph()
     nodeName = rdf.modelName this
-    graph.add rdf.makeTriple nodeName, "a", "prcd:PhoneCommunicationLog"
+    graph.add rdf.makeTriple nodeName, "a", klass
     graph.add rdf.makeTriple nodeName, "prcd:hasCorrespondantNumber", "tel:+#{this.correspondantNumber}"
     graph.add rdf.makeTriple nodeName, "pdta:isOutbound", (@direction is 'OUTGOING').toString()
     rdf.addDuration graph, this, "seconds", this.chipCount
