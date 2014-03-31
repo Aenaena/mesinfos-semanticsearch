@@ -173,7 +173,7 @@ module.exports = SearchCollection = (function(_super) {
             models.push(model = new GeoModel(lat, long));
             dict[token] = model.cid;
           } else if (id.substr(0, 4) === 'tel:') {
-            models.push(new BaseModel({
+            models.push(model = new BaseModel({
               title: id
             }));
             dict[token] = model.cid;
