@@ -609,7 +609,42 @@ buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "virement recu de Germaine ?"
+ text = "appels recu de Germaine ?"
+buf.push('<li><a');
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push('>');
+var __val__ = '"' + text + '"'
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</a></li>');
+ text = "mes courses d'octobre 2013 ?"
+buf.push('<li><a');
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push('>');
+var __val__ = '"' + text + '"'
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</a></li>');
+ text = "mes appels a paris ?"
+buf.push('<li><a');
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push('>');
+var __val__ = '"' + text + '"'
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</a></li>');
+ text = "sms envoyes a pierre ?"
+buf.push('<li><a');
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push('>');
+var __val__ = '"' + text + '"'
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</a></li>');
+ text = "virement recu de pierre ?"
+buf.push('<li><a');
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push('>');
+var __val__ = '"' + text + '"'
+buf.push(escape(null == __val__ ? "" : __val__));
+buf.push('</a></li>');
+ text = "series regarde la semaine derniere ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
