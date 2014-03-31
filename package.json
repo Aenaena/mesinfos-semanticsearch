@@ -26,7 +26,8 @@
     "americano": "0.3.0",
     "moment": "2.5.1",
     "search-index": "0.2.23",
-    "disect": "1.1.0"
+    "disect": "1.1.0",
+    "colors": "0.6.2"
   },
   "cozy-permissions": {
     "BankOperation": {
