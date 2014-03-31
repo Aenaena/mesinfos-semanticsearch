@@ -116,13 +116,15 @@ $(function() {
 });
 
 ;require.register("collections/search_results", function(exports, require, module) {
-var BaseModel, DateModel, SearchCollection, _ref,
+var BaseModel, DateModel, GeoModel, SearchCollection, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseModel = require('../models/base');
 
 DateModel = require('../models/date');
+
+GeoModel = require('../models/geo');
 
 module.exports = SearchCollection = (function(_super) {
   __extends(SearchCollection, _super);
@@ -136,24 +138,19 @@ module.exports = SearchCollection = (function(_super) {
 
   SearchCollection.prototype.initialize = function(items, options) {
     if (options.around) {
-      options.sparql = "PREFIX my: <https://my.cozy.io/>\nSELECT ?linked\nWHERE {\n    ?linked <a> pdta: PersonalData\n    ?linked ?p ?other\n    ?other ?p2 my:" + options.around + " .\n}";
+      this.fetch({
+        url: "semantic/around?id=" + options.around
+      });
     }
     if (options.query) {
       return this.fetch({
         url: "semantic/nlp?query=" + encodeURIComponent(options.query)
       });
-    } else if (options.sparql) {
-      return this.fetch({
-        url: "semantic/sparql",
-        method: 'POST',
-        contentType: 'text/sparql',
-        data: options.sparql
-      });
     }
   };
 
   SearchCollection.prototype.parse = function(data) {
-    var date, dict, hour, id, links, match, model, models, node, token, _i, _len, _ref1, _ref2;
+    var date, dict, hour, id, lat, links, long, match, model, models, node, token, _i, _len, _ref1, _ref2, _ref3;
 
     console.log("DATA", data);
     models = [];
@@ -164,14 +161,24 @@ module.exports = SearchCollection = (function(_super) {
       dict = {};
       for (token in match) {
         node = match[token];
-        if (node.token === 'uri') {
+        if ((node != null ? node.token : void 0) === 'uri') {
           id = node.value.replace('https://my.cozy.io/', '');
           if (id.substr(0, 8) === 'instant/') {
             _ref2 = id.substr(8).split('T'), date = _ref2[0], hour = _ref2[1];
             hour = hour.replace(/-/g, ':');
             models.push(model = new DateModel(date + 'T' + hour));
             dict[token] = model.cid;
+          } else if (id.substr(0, 9) === 'position/') {
+            _ref3 = id.substr(9).split('-').map(parseFloat), lat = _ref3[0], long = _ref3[1];
+            models.push(model = new GeoModel(lat, long));
+            dict[token] = model.cid;
+          } else if (id.substr(0, 4) === 'tel:') {
+            models.push(new BaseModel({
+              title: id
+            }));
+            dict[token] = model.cid;
           } else {
+            console.log(id);
             models.push(model = new BaseModel(data.docs[id]));
             dict[token] = model.cid;
           }
@@ -378,11 +385,11 @@ module.exports = BaseModel = (function(_super) {
   }
 
   BaseModel.prototype.getSummary = function() {
-    var date, direction, image, type, _ref1;
+    var date, direction, image, type, _ref1, _ref2;
 
-    switch (this.get('docType').toLowerCase()) {
+    switch ((_ref1 = this.get('docType')) != null ? _ref1.toLowerCase() : void 0) {
       case 'contact':
-        image = ((_ref1 = this.get('_attachments')) != null ? _ref1.picture : void 0) ? "images/contact/" + (this.get('_id')) + "/picture" : 'img/contact.png';
+        image = ((_ref2 = this.get('_attachments')) != null ? _ref2.picture : void 0) ? "images/contact/" + (this.get('_id')) + "/picture" : 'img/contact.png';
         return {
           title: this.get('fn'),
           image: image
@@ -478,6 +485,35 @@ module.exports = DateModel = (function(_super) {
 
 });
 
+;require.register("models/geo", function(exports, require, module) {
+var DateModel,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DateModel = (function(_super) {
+  __extends(DateModel, _super);
+
+  function DateModel(lat, long) {
+    DateModel.__super__.constructor.call(this, {
+      lat: lat,
+      long: long
+    });
+  }
+
+  DateModel.prototype.getSummary = function() {
+    return {
+      title: 'Position',
+      image: 'img/geo.png',
+      content: this.get('lat') + ';' + this.get('long')
+    };
+  };
+
+  return DateModel;
+
+})(Backbone.Model);
+
+});
+
 ;require.register("router", function(exports, require, module) {
 var HomeView, Router, SearchResultView, _ref,
   __hasProp = {}.hasOwnProperty,
@@ -497,7 +533,8 @@ module.exports = Router = (function(_super) {
 
   Router.prototype.routes = {
     '': 'home',
-    'search/*query': 'query'
+    'search/*query': 'query',
+    'around/:id': 'around'
   };
 
   Router.prototype.home = function() {
@@ -509,6 +546,13 @@ module.exports = Router = (function(_super) {
     app.header.setContent(decodeURIComponent(search));
     return this.displayView(new SearchResultView({
       query: search
+    }));
+  };
+
+  Router.prototype.around = function(id) {
+    app.header.setContent("A propos de " + id);
+    return this.displayView(new SearchResultView({
+      around: id
     }));
   };
 
@@ -583,7 +627,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#" class="navbar-brand">SemSearch</a></div><div class="navbar-collapse collapse"><form role="search" ng-controller="SearchCtrl" class="navbar-form navbar-left"><input type="text" placeholder="Rechercher" class="input-large form-control"/></form></div></div>');
+buf.push('<div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#" class="navbar-brand">SemSearch</a><a id="back-btn" href="#" class="navbar-brand">Ecran précédent</a></div><div class="navbar-collapse collapse"><form role="search" ng-controller="SearchCtrl" class="navbar-form navbar-left"><input type="text" placeholder="Rechercher" class="input-large form-control"/></form></div></div>');
 }
 return buf.join("");
 };
@@ -591,6 +635,7 @@ return buf.join("");
 
 ;require.register("views/card", function(exports, require, module) {
 var BaseView, CardView, _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -600,7 +645,7 @@ module.exports = CardView = (function(_super) {
   __extends(CardView, _super);
 
   function CardView() {
-    _ref = CardView.__super__.constructor.apply(this, arguments);
+    this.toggleSelected = __bind(this.toggleSelected, this);    _ref = CardView.__super__.constructor.apply(this, arguments);
     return _ref;
   }
 
@@ -622,7 +667,15 @@ module.exports = CardView = (function(_super) {
   };
 
   CardView.prototype.toggleSelected = function(event) {
-    return this.$el.toggleClass('selected');
+    var url;
+
+    if (this.model.get('_id')) {
+      return app.router.navigate('around/' + this.model.get('_id'), true);
+    } else if (this.model.get('lat')) {
+      url = "http://www.openstreetmap.org/#map=19/";
+      url += this.model.get('lat') + '/' + this.model.get('long');
+      return window.open(url, '_blank');
+    }
   };
 
   CardView.prototype.centerPos = function() {
@@ -688,11 +741,17 @@ module.exports = FolderView = (function(_super) {
   FolderView.prototype.template = require('../templates/search');
 
   FolderView.prototype.events = {
-    'keydown input': 'onKeyDown'
+    'keydown input': 'onKeyDown',
+    'click #back-btn': 'back'
   };
 
   FolderView.prototype.setContent = function(text) {
     return this.$('input').val(text);
+  };
+
+  FolderView.prototype.back = function(e) {
+    window.history.back();
+    return e.preventDefault();
   };
 
   FolderView.prototype.onKeyDown = function(event) {

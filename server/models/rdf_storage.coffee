@@ -38,6 +38,7 @@ RDFStorage.init = (callback) ->
             store.setPrefix 'rcp', 'http://www.techtane.info/receipt.ttl#'
             store.setPrefix 'rcpd', 'http://www.techtane.info/receiptdetail.ttl#'
             store.setPrefix 'xsd', 'http://www.w3.org/2001/XMLSchema#'
+            store.setPrefix 'geo', 'http://www.w3.org/2003/01/geo/wgs84_pos#'
             RDFStorage.loadOntologies store, (err) ->
                 callback err, store
 
@@ -104,7 +105,10 @@ RDFStorage.tools = tools =
 
     addPosition: (graph, model, lat, long) ->
         name = tools.modelName model
-        graph.add tools.makeTriple name, "geo:location", "#{name}.location"
-        graph.add tools.makeTriple "#{name}.location", "a", "geo:Point"
-        graph.add tools.makeTriple "#{name}.location", "geo:lat", tools.makeInt lat
-        graph.add tools.makeTriple "#{name}.location", "geo:long", tools.makeInt long
+
+        pointname = 'my:position/' + lat + '-' + long
+
+        graph.add tools.makeTriple name, "geo:location", pointname
+        graph.add tools.makeTriple pointname, "a", "geo:Point"
+        graph.add tools.makeTriple pointname, "geo:lat", tools.makeInt lat
+        graph.add tools.makeTriple pointname, "geo:long", tools.makeInt long

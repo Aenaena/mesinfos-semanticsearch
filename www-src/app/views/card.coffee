@@ -11,8 +11,13 @@ module.exports = class CardView extends BaseView
     getRenderData: ->
         _.extend {title:'', content:''}, @model.getSummary()
 
-    toggleSelected: (event) ->
-        @$el.toggleClass 'selected'
+    toggleSelected: (event) =>
+        if @model.get('_id')
+            app.router.navigate 'around/' + @model.get('_id'), true
+        else if @model.get('lat')
+            url = "http://www.openstreetmap.org/#map=19/"
+            url += @model.get('lat') + '/' + @model.get('long')
+            window.open url, '_blank'
 
     centerPos: ->
         {left, top} = @$el.position()

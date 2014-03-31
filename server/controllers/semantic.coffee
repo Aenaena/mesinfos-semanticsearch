@@ -9,13 +9,26 @@ sparqlbuilder = require '../lib/sparqlbuilder'
 
 module.exports =
 
+
+    findAround: (req, res, next) ->
+        dbclient.get "data/#{req.query.id}/", (err, response, doc) ->
+            Model = try require '../models/' + doc.docType.toLowerCase()
+            catch err then false
+
+            if sparql = Model?.prototype?.aroundSPARQL?.apply doc
+                module.exports.executeSparql rawBody:sparql, res, next
+            else
+                res.send semantic:[]
+
+
     executeSparql: (req, res, next) ->
 
         sparql = req.rawBody
 
         console.log sparql
 
-        query = RDFStorage.store.engine.abstractQueryTree.parseQueryString(sparql)
+        try query = RDFStorage.store.engine.abstractQueryTree.parseQueryString(sparql)
+        catch err then return next err
         variables = query.units[0].projection.map (x) -> x.value.value
         console.log 'VARS = ', variables
 
@@ -51,12 +64,12 @@ module.exports =
                     s: vars[1], o: vars[2]
                     s: vars[0], o: vars[2]
 
-        RDFStorage.store.execute sparql, (success, results) ->
+        handleResults = (success, results) ->
             return next new Error(results) unless success
 
             toFetch = []
             for match in results
-                for name, token of match
+                for name, token of match when token
                     if token.token is 'uri' and 0 is token.value.indexOf 'https://my.cozy.io/'
                         id = token.value.replace('https://my.cozy.io/', '').split('.')[0]
                         toFetch.push id unless id in toFetch
@@ -69,7 +82,11 @@ module.exports =
                     cb()
 
             , (err) ->
+                console.log "RESULT = ", results.length
                 res.send links: links, semantic: results, docs: docs
+
+        try RDFStorage.store.execute sparql, handleResults
+        catch err then next err
 
     executeNLP: (req, res, next) ->
 
@@ -79,11 +96,11 @@ module.exports =
         nl = decodeURIComponent req.query.query
         nl = nl.toLowerCase()
         tokenizer nl, (err, tokens) ->
+            return next err if err
             console.log "TOKENS = ", tokens
             abstracter tokens, (err, abstracted) ->
+                return next err if err
                 console.log "ABSTRACTED = ", abstracted
-                console.log "CONCRETED = ", c = concretizer abstracted
-                sparql = sparqlbuilder(c, abstracted.subjects, abstracted.filters)
-                console.log "SPARQL = ", sparql
-                try module.exports.executeSparql rawBody:sparql, res, next
-                catch err then next err
+                console.log "CONCRETED = ", concretizer abstracted
+                sparql = sparqlbuilder abstracted
+                module.exports.executeSparql rawBody:sparql, res, next

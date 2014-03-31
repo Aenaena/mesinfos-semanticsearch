@@ -28,8 +28,6 @@ PhoneCommunicationLog::toRDFGraph = (rdf) ->
 
     return false unless klass
 
-    console.log klass
-
     graph = rdf.makeGraph()
     nodeName = rdf.modelName this
     graph.add rdf.makeTriple nodeName, "a", klass
@@ -39,3 +37,23 @@ PhoneCommunicationLog::toRDFGraph = (rdf) ->
     rdf.addPosition graph, this, this.latitude, this.longitude
     rdf.addDatetime graph, this, new Date(this.timestamp)
     return graph
+
+
+PhoneCommunicationLog::aroundSPARQL = ->
+    """
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX prcd: <http://www.techtane.info/phonecommunicationlog.ttl#>
+    PREFIX time: <http://www.w3.org/2006/time#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX my: <https://my.cozy.io/>
+    SELECT ?person ?tel ?log ?instant ?point
+    WHERE {
+        ?log <a>/rdfs:subClassOf prcd:PhoneCommunicationLog .
+        ?log prcd:hasCorrespondantNumber ?tel .
+        ?log time:hasInstant/time:inDateTime ?instant .
+        OPTIONAL { ?person foaf:phone ?tel . }
+        OPTIONAL { ?log geo:location ?point  . }
+        FILTER(?log = my:#{@_id}) .
+    }
+    """

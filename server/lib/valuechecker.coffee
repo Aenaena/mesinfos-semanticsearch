@@ -2,30 +2,45 @@ indexer = require './indexer'
 store = require('../models/rdf_storage').store
 request = require 'request'
 
-# First step is to detect persons
-module.exports = (x, callback) ->
-    findContact x, (err, id) ->
-        return console.log err if err
-        return callback null, id # if id
-        # findPlace x, (err, found) ->
-        #     return console.log err if err
-        #     callback null, found
+module.exports = (x, results, callback) ->
+    findInDB x, results, (err, result) ->
+        return callback err if err or result
 
-findContact = (x, callback) ->
+        findPlace x, results, (err, result) ->
+
+            callback err
+
+findInDB = (x, results, next) ->
     indexer.search x, (err, msg) ->
-        if msg.hits.length is 0
-            callback null, ''
+        console.log "SEARCH RESULT", x, msg
 
-        hit = msg.hits.filter(
-            (h) -> h.document.docType.toLowerCase() is 'contact'
-        )[0]
+        return next null, false if msg.hits.length is 0
 
-        id = "<https://my.cozy.io/#{hit.id}>"
-        callback null, '?person = ' + id
+        # consider more than first results ?
+        hit = msg.hits[0]
+        if hit.document.docType.toLowerCase() is 'contact'
+            results.subjects.unshift '?person'
+            results.filters.push "?person = my:#{hit.id}"
+        #else other doctype ?
 
-# findPlace = (x, callback) ->
-#     x = encodeURIComponent x
-#     url = "http://nominatim.openstreetmap.org/search/#{x}?format=json"
-#     request url, (err, response, body) ->
-#         [llat, ulat, llon, ulon] = body[0].boundingbox
-#         callback null, 'FILTER(?lat < id)'
+        next null, true
+
+findPlace = (x, results, next) ->
+    x = encodeURIComponent x
+    url = "http://nominatim.openstreetmap.org/search/#{x}?format=json"
+    request url: url, json: true, (err, response, body) ->
+
+        console.log url, err, body
+        return next null, false if body.length is 0
+
+        [llat, ulat, llon, ulon] = body[0].boundingbox
+        results.subjects.push '?point'
+        results.concrete.push s: '?point', p: 'geo:lat', o: '?lat'
+        results.concrete.push s: '?point', p: 'geo:long', o: '?long'
+        results.filters.push [
+            '?lat < "' + ulat + '"^^xsd:float',
+            '?lat > "' + llat + '"^^xsd:float',
+            '?long < "' + ulon + '"^^xsd:float',
+            '?long > "' + llon + '"^^xsd:float'
+        ].join ' && '
+        next null, true

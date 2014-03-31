@@ -2,7 +2,7 @@ module.exports = class BaseModel extends Backbone.Model
 
 
     getSummary:  ->
-        switch @get('docType').toLowerCase()
+        switch @get('docType')?.toLowerCase()
             when 'contact'
 
                 image = if @get('_attachments')?.picture then "images/contact/#{@get('_id')}/picture"

@@ -8,4 +8,5 @@ module.exports =
     'images/:doctype/:id/:file': get: index.image
 
     'semantic/nlp': get: semantic.executeNLP
+    'semantic/around': get: semantic.findAround
     'semantic/sparql': post: semantic.executeSparql

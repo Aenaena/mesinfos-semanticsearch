@@ -6,9 +6,14 @@ module.exports = class FolderView extends BaseView
     template: require '../templates/search'
     events:
         'keydown input': 'onKeyDown'
+        'click #back-btn': 'back'
 
     setContent: (text) ->
         @$('input').val text
+
+    back: (e) ->
+        window.history.back()
+        e.preventDefault()
 
     onKeyDown: (event) ->
         if event.which is 13

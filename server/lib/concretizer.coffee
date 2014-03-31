@@ -1,4 +1,3 @@
-findsubjects = require './findsubjects'
 timeIndicator = ['time:year', 'time:month', 'time:week']
 
 pathToDate = (pdta) ->
@@ -10,9 +9,7 @@ pathToDate = (pdta) ->
             # ...
 module.exports = (triples) ->
 
-    triples.subjects = subjects = findsubjects(triples.concrete)
-
-    if '?log' in subjects
+    if '?log' in triples.subjects
         # we want the instant
         triples.concrete.push
             s: '?log'
@@ -21,7 +18,7 @@ module.exports = (triples) ->
 
         triples.subjects.push '?instant'
 
-    if '?vod' in subjects
+    if '?vod' in triples.subjects
         # we want the instant
         triples.concrete.push
             s: '?vod'
@@ -30,7 +27,7 @@ module.exports = (triples) ->
 
         triples.subjects.push '?vod'
 
-    if '?bankoperation' in subjects
+    if '?bankoperation' in triples.subjects
         # we want the instant
         triples.concrete.push
             s: '?bankoperation'
@@ -39,7 +36,7 @@ module.exports = (triples) ->
 
         triples.subjects.push '?instant'
 
-    if '?receipt' in subjects
+    if '?receipt' in triples.subjects
         # we want the instant
         triples.concrete.push
             s: '?receipt'
@@ -49,11 +46,14 @@ module.exports = (triples) ->
         triples.subjects.push '?instant'
 
 
-    if '?log' in subjects and '?person' in subjects
+    if '?log' in triples.subjects and '?person' in triples.subjects
         t = s: '?person', o: '?tel', p: 'foaf:phone'
         c = s: '?log', o: '?tel', p: 'prcd:hasCorrespondantNumber'
         triples.concrete.push t
         triples.concrete.push c
+
+    if '?log' in triples.subjects and '?point' in triples.subjects
+        triples.concrete.push s: '?log', p: 'geo:location', o: '?point'
 
     for triple in triples.abstract
         if triple.p is 'pdta:isOutbound'

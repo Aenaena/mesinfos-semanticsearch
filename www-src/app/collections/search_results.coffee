@@ -1,5 +1,6 @@
 BaseModel = require '../models/base'
 DateModel = require '../models/date'
+GeoModel = require '../models/geo'
 
 module.exports = class SearchCollection extends Backbone.Collection
 
@@ -8,27 +9,10 @@ module.exports = class SearchCollection extends Backbone.Collection
     initialize: (items, options) ->
 
         if options.around
-            options.sparql = """
-                PREFIX my: <https://my.cozy.io/>
-                SELECT ?linked
-                WHERE {
-                    ?linked <a> pdta: PersonalData
-                    ?linked ?p ?other
-                    ?other ?p2 my:#{options.around} .
-                }
-            """
+            @fetch url: "semantic/around?id=" + options.around
 
         if options.query
             @fetch url: "semantic/nlp?query=" + encodeURIComponent options.query
-
-        else if options.sparql
-            @fetch
-                url: "semantic/sparql"
-                method: 'POST'
-                contentType: 'text/sparql'
-                data: options.sparql
-
-
 
     parse: (data) ->
 
@@ -39,7 +23,7 @@ module.exports = class SearchCollection extends Backbone.Collection
         for match in data.semantic
             dict = {}
             for token, node of match
-                if node.token is 'uri'
+                if node?.token is 'uri'
                     id = node.value.replace('https://my.cozy.io/', '')
                     # console.log id, data.docs[id]
                     if id.substr(0, 8) is 'instant/'
@@ -48,7 +32,17 @@ module.exports = class SearchCollection extends Backbone.Collection
                         models.push model = new DateModel date + 'T' + hour
                         dict[token] = model.cid
 
+                    else if id.substr(0, 9) is 'position/'
+                        [lat, long] = id.substr(9).split('-').map parseFloat
+                        models.push model = new GeoModel lat, long
+                        dict[token] = model.cid
+
+                    else if id.substr(0,4) is 'tel:'
+                        models.push new BaseModel title: id
+                        dict[token] = model.cid
+
                     else
+                        console.log id
                         models.push model = new BaseModel data.docs[id]
                         dict[token] = model.cid
 

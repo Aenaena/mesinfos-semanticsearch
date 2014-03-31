@@ -3,11 +3,14 @@ async = require 'async'
 moment = new moment()
 moment.lang('fr')
 valuechecker = require './valuechecker'
+findsubjects = require './findsubjects'
 
 module.exports = (tokens, callback) ->
 
     concrete = []
     abstract = []
+    filters = []
+    subjects = []
     ops = []
     pdta = null
 
@@ -107,14 +110,15 @@ module.exports = (tokens, callback) ->
             when 'specificDate'
                 abstract.push s: '?x', p: 'time:date', o: moment.format('YYYY-MM-DD')
 
-            when 'wordToEvaluate'
-                do (tok) -> ops.push (cb) -> valuechecker tok, cb
-
             when 'video'
                 pdta = '?vod'
                 concrete.push s: '?vod', o: '<a>', p: 'vod:VideoOnDemand'
 
+            when 'wordToEvaluate'
+                do (tok) -> ops.push (cb) -> valuechecker tok.content, resultObject, cb
 
-    async.parallel ops, (err, filters) ->
-        filters = filters.map((f) -> "FILTER(#{f})").join("\n")
-        callback null, {concrete, abstract, pdta, filters}
+    resultObject = {concrete, abstract, pdta, filters}
+    resultObject.subjects = findsubjects(resultObject.concrete)
+
+    async.parallel ops, (err) ->
+        callback null, resultObject

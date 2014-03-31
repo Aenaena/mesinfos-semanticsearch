@@ -1,6 +1,3 @@
-Tokenizer = require 'tokenizer'
-
-
 rules = (t) ->
     #template
     #t.addRule /^$/,"rule"
@@ -97,7 +94,7 @@ rules = (t) ->
     t.addRule /^euros$/, "priceMarker"
     t.addRule /^euro$/, "priceMarker"
     # Floats
-    t.addRule /^(?:[1-9]\d*|0)?(?:\.\d+)?$/, "float"
+    t.addRule /^(?:[1-9]\d*|0)+(?:\.\d+)?$/, "float"
 
     # VOD : we treat everything as a video, be it a movie, tv show etc
     t.addRule /^film$/, "video"
@@ -135,23 +132,51 @@ rules = (t) ->
     # wording for now
     t.addRule /^\w+$/, "wordToEvaluate"
     t.addRule /^(\s)+$/, "whitespace"
+
+
     t.ignore "whitespace"
     t.ignore "blacklist"
     t.ignore "ponctuation"
     t.addRule /^[',;.:!?-]$/, "ponctuation"
 
 
+disect = require('disect')
+
 module.exports = (input, callback) ->
+    index = 0
+    step = 64
+    _regexes = []
+    _ignored = {}
     tokens = []
-    t = new Tokenizer()
-    rules(t)
-    t.on 'token', (tok) -> tokens.push tok
-    t.on 'data', -> # do nothing, fuck stream API
-    t.on 'error', (error) ->
-        callback error
-        callback = ->
-    t.on 'end', ->
-        callback null, tokens
-        callback = ->
-    t.write input
-    t.end()
+
+    addRule = (regex, type) -> _regexes.push regex: regex, type: type
+    ignore = (type) -> _ignored[type] = true
+
+    rules {addRule, ignore}
+
+    Token = (content, type) ->
+        this.content = content
+        this.type = type
+
+    _getMatchingRule = (str) ->
+        for regex in _regexes when regex.regex.test str
+            return regex
+        return null
+
+    _tokenize = (data) ->
+        maxIndex = disect 0, data.length, (index) ->
+            buf = data.substring(0, index + 1)
+            return _getMatchingRule(buf) is null
+
+        str = data.substring(0, maxIndex);
+        rule = _getMatchingRule(str);
+
+        tokens.push new Token(str, rule.type) unless _ignored[rule.type]
+
+        if maxIndex is data.length
+            return
+        else
+            _tokenize data.substring maxIndex
+
+    _tokenize(input)
+    callback null, tokens

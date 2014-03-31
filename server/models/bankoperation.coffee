@@ -22,3 +22,16 @@ BankOperation::toRDFGraph = (rdf) ->
     graph.add rdf.makeTriple nodeName, "pdta:isOutbound", isOutbound
     rdf.addDatetime graph, this, new Date(this.date)
     return graph
+
+BankOperation::aroundSPARQL = ->
+    """
+    PREFIX bko: <http://www.techtane.info/bankoperation.ttl#>
+    PREFIX time: <http://www.w3.org/2006/time#>
+    PREFIX my: <https://my.cozy.io/>
+    SELECT ?bankoperation ?instant
+    WHERE {
+        ?bankoperation <a> bko:BankOperation .
+        ?bankoperation time:hasInstant/time:inDateTime ?instant .
+        FILTER(?bankoperation = my:#{@_id}) .
+    }
+    """
