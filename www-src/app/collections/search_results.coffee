@@ -38,7 +38,7 @@ module.exports = class SearchCollection extends Backbone.Collection
                         dict[token] = model.cid
 
                     else if id.substr(0,4) is 'tel:'
-                        models.push new BaseModel title: id
+                        models.push model = new BaseModel title: id
                         dict[token] = model.cid
 
                     else
