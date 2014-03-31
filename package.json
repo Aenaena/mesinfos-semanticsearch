@@ -23,8 +23,10 @@
     "async": "0.2.10",
     "xmlhttprequest": "1.6.0",
     "americano-cozy": "0.2.2",
-    "tokenizer": "~1.1.2",
-    "moment": "^2.5.1"
+    "americano": "0.3.0",
+    "moment": "2.5.1",
+    "search-index": "0.2.23",
+    "disect": "1.1.0"
   },
   "cozy-permissions": {
     "BankOperation": {
