@@ -1,9 +1,11 @@
 request = require 'request'
 endpoint = 'http://dbpedia.org/sparql'
-
+# Pass a regular SPARQL query.
+# This routine encode it and queries dbpedia.
+# Results are returned in XML.
 module.exports = (query, callback)->
-    request endpoint + '/' + query
+    encodedQuery = urlEncode(query)
+    request endpoint + '/' + encodedQuery
     (error, response, body)->
         return callback error if error
-        body = JSON.parse body
-        callback null, body.response.title
+        callback null, body

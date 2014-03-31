@@ -17,6 +17,15 @@ bko:BankOperation
     rdfs:subClassOf pdta:PersonalData .
 
 ###########################################
+# Object properties
+###########################################
+
+prcd:hasContact
+    a owl:ObjectProperty ;
+    rdfs:domain bko:BankOperation ;
+    rdfs:range foaf:Person .
+
+###########################################
 # Data properties
 ###########################################
 
@@ -24,21 +33,21 @@ bko:hasBankAccount
     a owl:DatatypeProperty ;
     rdfs:domain bko:BankOperation ;
     rdfs:label "bankAccount"^^xsd:string ;
-    rdfs:range xsd:string . 
+    rdfs:range xsd:string .
 
 bko:hasAmount
     a owl:DatatypeProperty ;
     rdfs:domain bko:BankOperation ;
-    rdfs:range xsd:integer .    
+    rdfs:range xsd:integer .
 
 bko:hasRawTitle
     a owl:DatatypeProperty ;
     rdfs:domain bko:BankOperation ;
     rdfs:label "rawTitle"^^xsd:string ;
-    rdfs:range xsd:string . 
-    
+    rdfs:range xsd:string .
+
 bko:hasTitle
     a owl:DatatypeProperty ;
     rdfs:domain bko:BankOperation ;
     rdfs:label "title"^^xsd:string ;
-    rdfs:range xsd:string . 
+    rdfs:range xsd:string .
