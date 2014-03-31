@@ -74,6 +74,7 @@ module.exports =
                 for name, token of match when token
                     if token.token is 'uri' and 0 is token.value.indexOf 'https://my.cozy.io/'
                         id = token.value.replace('https://my.cozy.io/', '').split('.')[0]
+                        continue if id.indexOf('/') isnt -1 # instant/ & location/
                         toFetch.push id unless id in toFetch
 
             console.log "TO FETCH", toFetch
