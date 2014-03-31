@@ -601,7 +601,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<h1>Bienvenue sur L\'application SemSearch.</h1><p class="status">Veuillez patientez quelques instants.\nL\'analyseur est en train de lier vos données.</p><h2>Examples de requêtes</h2><ul class="samples">');
+buf.push('<h1>Bienvenue sur L\'application SemSearch.</h1><p class="status">Taper une question dans la barre ci-dessus</p><h2>Examples de requêtes</h2><ul class="samples">');
  text = "Qui ai-je appele en mars ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
