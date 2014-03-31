@@ -76,6 +76,10 @@ RDFStorage.tools = tools =
         rdf = RDFStorage.store.rdf
         rdf.createLiteral i, null, rdf.resolve('xsd:integer')
 
+    makeFloat: (i) ->
+        rdf = RDFStorage.store.rdf
+        rdf.createLiteral i, null, rdf.resolve('xsd:float')
+
     addDuration: (graph, model, units, count) ->
         name = tools.modelName model
         graph.add tools.makeTriple name, "time:hasDuration", "#{name}.duration"
@@ -110,5 +114,5 @@ RDFStorage.tools = tools =
 
         graph.add tools.makeTriple name, "geo:location", pointname
         graph.add tools.makeTriple pointname, "a", "geo:Point"
-        graph.add tools.makeTriple pointname, "geo:lat", tools.makeInt lat
-        graph.add tools.makeTriple pointname, "geo:long", tools.makeInt long
+        graph.add tools.makeTriple pointname, "geo:lat", tools.makeFloat lat
+        graph.add tools.makeTriple pointname, "geo:long", tools.makeFloat long

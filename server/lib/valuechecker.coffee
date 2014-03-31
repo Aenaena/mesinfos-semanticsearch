@@ -30,7 +30,6 @@ findPlace = (x, results, next) ->
     url = "http://nominatim.openstreetmap.org/search/#{x}?format=json"
     request url: url, json: true, (err, response, body) ->
 
-        console.log url, err, body
         return next null, false if body.length is 0
 
         [llat, ulat, llon, ulon] = body[0].boundingbox
@@ -38,9 +37,9 @@ findPlace = (x, results, next) ->
         results.concrete.push s: '?point', p: 'geo:lat', o: '?lat'
         results.concrete.push s: '?point', p: 'geo:long', o: '?long'
         results.filters.push [
-            '?lat < "' + ulat + '"^^xsd:float',
-            '?lat > "' + llat + '"^^xsd:float',
-            '?long < "' + ulon + '"^^xsd:float',
-            '?long > "' + llon + '"^^xsd:float'
+            '?lat < ' + ulat
+            '?lat > ' + llat
+            '?long < ' + ulon
+            '?long > ' + llon
         ].join ' && '
         next null, true
