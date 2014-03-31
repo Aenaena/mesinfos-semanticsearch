@@ -46,10 +46,10 @@
     "receiptdetail": {
       "description": "Parcourez vos achats"
     },
-    "rdf_storage": {
+    "rdfstorage": {
       "description": "Enregistre les liens entre vos données"
     },
-    "progress_store": {
+    "semsearchprogressstore": {
       "description": "Evite de reparcourir vos données  chaque démarage"
     }
   }
