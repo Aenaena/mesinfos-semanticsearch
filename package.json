@@ -25,5 +25,28 @@
     "americano-cozy": "0.2.2",
     "tokenizer": "~1.1.2",
     "moment": "^2.5.1"
+  },
+  "cozy-permissions": {
+    "BankOperation": {
+      "description": "Parcourez vos opérations bancaires."
+    },
+    "contact": {
+      "description": "Voir les liens avec vos contacts."
+    },
+    "phonecommunicationlog": {
+      "description": "Parcourez vos appels & sms"
+    },
+    "receipt": {
+      "description": "Parcourez vos achats"
+    },
+    "receiptdetail": {
+      "description": "Parcourez vos achats"
+    },
+    "rdf_storage": {
+      "description": "Enregistre les liens entre vos données"
+    },
+    "progress_store": {
+      "description": "Evite de reparcourir vos données  chaque démarage"
+    }
   }
 }
