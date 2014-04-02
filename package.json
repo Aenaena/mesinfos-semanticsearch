@@ -1,7 +1,7 @@
 {
   "name": "mesinfos-semanticsearch",
   "version": "0.0.1",
-  "description": "mesinfos-semanticsearch\r =======================",
+  "description": "MesInfos Semantic Search vous permet d'explorer vos données personnelles grâce à des requêtes en langage naturel, dans une interface enrichie par les données du Linked Open Data. Semantic Search vous permet de trouver l'information que vous cherchez sans avoir à affiner une recherche avec de nombreux paramètres. Exemple de requête possible : \"Qui ai-je appelé à Paris en mars ?\" ",
   "main": "build/server.js",
   "scripts": {
     "start": "coffee server.coffee",
@@ -30,6 +30,7 @@
     "colors": "0.6.2",
     "request": "2.34.0"
   },
+  "cozy-displayName": "SemanticSearch",
   "cozy-permissions": {
     "BankOperation": {
       "description": "Parcourez vos opérations bancaires."
