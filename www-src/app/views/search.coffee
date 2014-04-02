@@ -1,4 +1,5 @@
 BaseView = require '../lib/base_view'
+noaccent = require '../lib/noaccent'
 
 module.exports = class FolderView extends BaseView
 
@@ -17,5 +18,5 @@ module.exports = class FolderView extends BaseView
 
     onKeyDown: (event) ->
         if event.which is 13
-            url = "search/" + encodeURIComponent @$('input').val()
+            url = "search/" + encodeURIComponent noaccent @$('input').val()
             app.router.navigate url, trigger: true
