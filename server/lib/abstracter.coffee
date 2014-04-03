@@ -74,7 +74,7 @@ module.exports = (tokens, callback) ->
                 if previous == 'bankTransfer'
                     concrete.push s: '?bankoperation', p: 'pdta:isOutbound', o: 'true'
                 else
-                    abstract.push s: '?x', p: 'pdta:isOutbound', o: 'false'
+                    abstract.push s: '?x', p: 'pdta:isOutbound', o: 'true'
 
             when 'float'
                 # Check if it's a price
