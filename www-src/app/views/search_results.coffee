@@ -39,7 +39,7 @@ module.exports = class SearchResults extends ViewCollection
         if views.length
             # there is some links, figure where to place it
             {top, left} = views[0].$el.position()
-            top = 50
+            # top -= 100
             left += 350
             while @overlaps top, left
                 top += 100

@@ -1018,49 +1018,42 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<h1>Bienvenue sur L\'application SemSearch.</h1><p class="status">Taper une question dans la barre ci-dessus</p><h2>Examples de requêtes</h2><ul class="samples">');
- text = "Qui ai-je appele en mars ?"
+ text = "Qui ai-je appelé en mars ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "appels recu de Germaine ?"
+ text = "Appels recu de Jeanette ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "mes courses d'octobre 2013 ?"
+ text = "Mes courses d'octobre 2013 ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "mes appels a paris ?"
+ text = "Mes appels a paris ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "sms envoyes a pierre ?"
+ text = "sms envoyés a pierre ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
- text = "virement recu de pierre ?"
-buf.push('<li><a');
-buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
-buf.push('>');
-var __val__ = '"' + text + '"'
-buf.push(escape(null == __val__ ? "" : __val__));
-buf.push('</a></li>');
- text = "series regarde la semaine derniere ?"
+ text = "Virement recu de pierre ?"
 buf.push('<li><a');
 buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
 buf.push('>');
@@ -1312,7 +1305,6 @@ module.exports = SearchResults = (function(_super) {
     console.log(views);
     if (views.length) {
       _ref1 = views[0].$el.position(), top = _ref1.top, left = _ref1.left;
-      top = 50;
       left += 350;
       while (this.overlaps(top, left)) {
         top += 100;
