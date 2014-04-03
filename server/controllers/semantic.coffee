@@ -34,11 +34,16 @@ module.exports =
 
         nodes = []
         links = []
+
+
+        parts = query.units[0].pattern.patterns
         #IHAVENOIDEAWHATIAMDOING
-        edges = query.units[0].pattern.patterns[0].triplesContext or
-        query.units[0].pattern.patterns[0].value.reduce (prev, block) ->
-            prev.concat block.patterns[0].triplesContext
-        , []
+        edges = parts[0].triplesContext or
+        parts[0].value?.reduce((prev, block) -> prev.concat block.patterns[0].triplesContext
+        , [])
+
+        for p in parts[1..parts.length-1] when p.token is 'optionalgraphpattern'
+            edges = edges.concat p.value.patterns[0].triplesContext
 
         edges = edges.filter (triple) ->
             triple.subject.token is 'var' and triple.object.token is 'var'
@@ -95,8 +100,6 @@ module.exports =
 
     executeNLP: (req, res, next) ->
 
-        # SIMULATE QUESTION ASKED IS ALWAYS
-        # Qui ai-je appelé en mars ?
         console.log "QUERY = '#{decodeURIComponent req.query.query }'"
         nl = decodeURIComponent req.query.query
         nl = nl.toLowerCase()
