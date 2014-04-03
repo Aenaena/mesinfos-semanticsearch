@@ -189,10 +189,11 @@ module.exports = SearchCollection = (function(_super) {
             _ref2 = id.substr(8).split('T'), date = _ref2[0], hour = _ref2[1];
             hour = hour.replace(/-/g, ':');
             models.push(model = new DateModel(date + 'T' + hour));
+            dict[token] = model.id = id;
           } else if (id.substr(0, 9) === 'position/') {
             _ref3 = id.substr(9).split('-').map(parseFloat), lat = _ref3[0], long = _ref3[1];
             models.push(model = new GeoModel(lat, long));
-            dict[token] = model.id = id;
+            dict[token] = model.id = Math.random() * 10000000;
           } else if (id.substr(0, 4) === 'tel:') {
             models.push(model = new BaseModel({
               title: id.substr(4)
@@ -205,14 +206,14 @@ module.exports = SearchCollection = (function(_super) {
             dict[token] = model.id = id.substr(7);
           } else {
             models.push(model = new BaseModel(data.docs[id]));
-            dict[token] = model.id;
+            dict[token] = model.id = id;
           }
-          dict[token] = model.id = id;
         } else if ((node != null ? node.token : void 0) === 'literal') {
           models.push(model = new ValueModel(node.value));
           dict[token] = model.id;
         }
       }
+      console.log(dict);
       links = links.concat(data.links.map(function(l) {
         return {
           s: dict[l.s],
@@ -1018,44 +1019,44 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<h1>Bienvenue sur L\'application SemSearch.</h1><p class="status">Taper une question dans la barre ci-dessus</p><h2>Examples de requêtes</h2><ul class="samples">');
- text = "Qui ai-je appelé en mars ?"
+ text = "Qui ai-je appelé en aout ?"
 buf.push('<li><a');
-buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(noaccent(text))) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
  text = "Appels recu de Jeanette ?"
 buf.push('<li><a');
-buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(noaccent(text))) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
  text = "Mes courses d'octobre 2013 ?"
 buf.push('<li><a');
-buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(noaccent(text))) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
  text = "Mes appels a paris ?"
 buf.push('<li><a');
-buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(noaccent(text))) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
  text = "sms envoyés a pierre ?"
 buf.push('<li><a');
-buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(noaccent(text))) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
 buf.push('</a></li>');
  text = "Virement recu de pierre ?"
 buf.push('<li><a');
-buf.push(attrs({ 'href':("#search/" + encodeURIComponent(text)) }, {"href":true}));
+buf.push(attrs({ 'href':("#search/" + encodeURIComponent(noaccent(text))) }, {"href":true}));
 buf.push('>');
 var __val__ = '"' + text + '"'
 buf.push(escape(null == __val__ ? "" : __val__));
@@ -1158,6 +1159,12 @@ module.exports = HomeView = (function(_super) {
   HomeView.prototype.className = 'jumbotron';
 
   HomeView.prototype.template = require('../templates/home');
+
+  HomeView.prototype.getRenderData = function() {
+    return {
+      noaccent: require('../lib/noaccent')
+    };
+  };
 
   return HomeView;
 
@@ -1282,13 +1289,11 @@ module.exports = SearchResults = (function(_super) {
         o: _this.collection.get(l.o).cid
       };
     });
-    console.log(links);
     links = links.filter(function(l) {
       var _ref1;
 
       return (_ref1 = view.model.cid) === l.s || _ref1 === l.o;
     });
-    console.log(links);
     links = links.map(function(l) {
       if (l.s === view.model.cid) {
         return l.o;
@@ -1296,13 +1301,11 @@ module.exports = SearchResults = (function(_super) {
         return l.s;
       }
     });
-    console.log(links);
     views = links.map(function(cid) {
       return _this.views[cid];
     }).filter(function(x) {
       return !!x;
     });
-    console.log(views);
     if (views.length) {
       _ref1 = views[0].$el.position(), top = _ref1.top, left = _ref1.left;
       left += 350;

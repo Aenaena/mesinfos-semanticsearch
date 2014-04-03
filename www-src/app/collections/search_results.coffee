@@ -42,11 +42,12 @@ module.exports = class SearchCollection extends Backbone.Collection
                         [date, hour] = id.substr(8).split('T')
                         hour = hour.replace /-/g, ':'
                         models.push model = new DateModel date + 'T' + hour
+                        dict[token] = model.id = id
 
                     else if id.substr(0, 9) is 'position/'
                         [lat, long] = id.substr(9).split('-').map parseFloat
                         models.push model = new GeoModel lat, long
-                        dict[token] = model.id = id
+                        dict[token] = model.id = Math.random()*10000000
 
                     else if id.substr(0,4) is 'tel:'
                         models.push model = new BaseModel title: id.substr(4)
@@ -58,12 +59,13 @@ module.exports = class SearchCollection extends Backbone.Collection
 
                     else
                         models.push model = new BaseModel data.docs[id]
-                        dict[token] = model.id
+                        dict[token] = model.id = id
 
-                    dict[token] = model.id = id
                 else if node?.token is 'literal'
                     models.push model = new ValueModel node.value
                     dict[token] = model.id
+
+            console.log dict
 
             links = links.concat data.links.map((l) ->
                 s: dict[l.s], o: dict[l.o]

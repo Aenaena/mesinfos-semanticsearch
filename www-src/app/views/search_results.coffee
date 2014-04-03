@@ -27,13 +27,9 @@ module.exports = class SearchResults extends ViewCollection
 
     appendView: (view) ->
         links = @collection.links.map (l) => s:@collection.get(l.s).cid, o:@collection.get(l.o).cid
-        console.log(links)
         links = links.filter (l) -> view.model.cid in [l.s, l.o]
-        console.log links
         links = links.map (l) -> if l.s is view.model.cid then l.o else l.s
-        console.log links
         views = links.map((cid) => @views[cid]).filter (x) -> not not x
-        console.log views
 
 
         if views.length

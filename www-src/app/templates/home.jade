@@ -5,20 +5,20 @@ p.status
 
 h2 Examples de requêtes
 ul.samples
-    - text = "Qui ai-je appelé en mars ?"
-    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'
+    - text = "Qui ai-je appelé en aout ?"
+    li: a(href="#search/" + encodeURIComponent(noaccent(text)))= '"' + text + '"'
 
     - text = "Appels recu de Jeanette ?"
-    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'
+    li: a(href="#search/" + encodeURIComponent(noaccent(text)))= '"' + text + '"'
 
     - text = "Mes courses d'octobre 2013 ?"
-    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'
+    li: a(href="#search/" + encodeURIComponent(noaccent(text)))= '"' + text + '"'
 
     - text = "Mes appels a paris ?"
-    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'
+    li: a(href="#search/" + encodeURIComponent(noaccent(text)))= '"' + text + '"'
 
     - text = "sms envoyés a pierre ?"
-    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'
+    li: a(href="#search/" + encodeURIComponent(noaccent(text)))= '"' + text + '"'
 
     - text = "Virement recu de pierre ?"
-    li: a(href="#search/" + encodeURIComponent(text))= '"' + text + '"'
+    li: a(href="#search/" + encodeURIComponent(noaccent(text)))= '"' + text + '"'
