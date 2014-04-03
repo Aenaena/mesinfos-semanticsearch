@@ -116,13 +116,15 @@ $(function() {
 });
 
 ;require.register("collections/search_results", function(exports, require, module) {
-var BaseModel, DateModel, GeoModel, SearchCollection, _ref,
+var BaseModel, DateModel, GeoModel, SearchCollection, ValueModel, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseModel = require('../models/base');
 
 DateModel = require('../models/date');
+
+ValueModel = require('../models/value');
 
 GeoModel = require('../models/geo');
 
@@ -136,23 +138,42 @@ module.exports = SearchCollection = (function(_super) {
 
   SearchCollection.prototype.model = BaseModel;
 
+  SearchCollection.prototype.links = {};
+
   SearchCollection.prototype.initialize = function(items, options) {
     if (options.around) {
       this.fetch({
+        reset: true,
         url: "semantic/around?id=" + options.around
       });
     }
     if (options.query) {
       return this.fetch({
+        reset: true,
         url: "semantic/nlp?query=" + encodeURIComponent(options.query)
       });
     }
   };
 
+  SearchCollection.prototype.getPlacementInfo = function(id) {
+    var links, model;
+
+    model = this.get;
+    return links = this.links[id].map(function(otherId) {
+      return this.get(otherId);
+    });
+  };
+
+  SearchCollection.prototype.addLink = function(s, o) {
+    var _base, _base1, _name, _name1, _ref1, _ref2;
+
+    ((_ref1 = (_base = this.links)[_name = s.id]) != null ? _ref1 : _base[_name] = []).push(o.id);
+    return ((_ref2 = (_base1 = this.links)[_name1 = o.id]) != null ? _ref2 : _base1[_name1] = []).push(s.id);
+  };
+
   SearchCollection.prototype.parse = function(data) {
     var date, dict, hour, id, lat, links, long, match, model, models, node, token, _i, _len, _ref1, _ref2, _ref3;
 
-    console.log("DATA", data);
     models = [];
     links = [];
     _ref1 = data.semantic;
@@ -161,27 +182,35 @@ module.exports = SearchCollection = (function(_super) {
       dict = {};
       for (token in match) {
         node = match[token];
+        model = null;
         if ((node != null ? node.token : void 0) === 'uri') {
           id = node.value.replace('https://my.cozy.io/', '');
           if (id.substr(0, 8) === 'instant/') {
             _ref2 = id.substr(8).split('T'), date = _ref2[0], hour = _ref2[1];
             hour = hour.replace(/-/g, ':');
             models.push(model = new DateModel(date + 'T' + hour));
-            dict[token] = model.cid;
           } else if (id.substr(0, 9) === 'position/') {
             _ref3 = id.substr(9).split('-').map(parseFloat), lat = _ref3[0], long = _ref3[1];
             models.push(model = new GeoModel(lat, long));
-            dict[token] = model.cid;
+            dict[token] = model.id = id;
           } else if (id.substr(0, 4) === 'tel:') {
             models.push(model = new BaseModel({
-              title: id
+              title: id.substr(4)
             }));
-            dict[token] = model.cid;
+            dict[token] = model.id = id.substr(4);
+          } else if (id.substr(0, 7) === 'mailto:') {
+            models.push(model = new BaseModel({
+              title: id.substr(7)
+            }));
+            dict[token] = model.id = id.substr(7);
           } else {
-            console.log(id);
             models.push(model = new BaseModel(data.docs[id]));
-            dict[token] = model.cid;
+            dict[token] = model.id;
           }
+          dict[token] = model.id = id;
+        } else if ((node != null ? node.token : void 0) === 'literal') {
+          models.push(model = new ValueModel(node.value));
+          dict[token] = model.id;
         }
       }
       links = links.concat(data.links.map(function(l) {
@@ -189,8 +218,11 @@ module.exports = SearchCollection = (function(_super) {
           s: dict[l.s],
           o: dict[l.o]
         };
+      }).filter(function(l) {
+        return l.s && l.o;
       }));
     }
+    console.log(links);
     if (data.semantic.length === 0) {
       models.push(new BaseModel({
         docType: 'error',
@@ -727,6 +759,8 @@ module.exports = BaseModel = (function(_super) {
     return _ref;
   }
 
+  BaseModel.prototype.idAttribute = '_id';
+
   BaseModel.prototype.getSummary = function() {
     var date, direction, image, type, _ref1, _ref2;
 
@@ -762,6 +796,13 @@ module.exports = BaseModel = (function(_super) {
       case 'receipt':
         return {
           title: 'Ticket de Caisse',
+          content: this.get('amount') + '€',
+          image: 'img/receipt.png'
+        };
+      case 'receiptdetail':
+        return {
+          title: this.get('label'),
+          content: this.get('price') + '€',
           image: 'img/receipt.png'
         };
       case 'error':
@@ -771,7 +812,7 @@ module.exports = BaseModel = (function(_super) {
         };
       default:
         return {
-          image: 'http://placehold.it/64&text=?',
+          image: 'img/idk.png',
           title: this.get('title') || '???'
         };
     }
@@ -809,8 +850,12 @@ module.exports = DateModel = (function(_super) {
   __extends(DateModel, _super);
 
   function DateModel(value) {
+    var date;
+
+    date = new Date(value);
     DateModel.__super__.constructor.call(this, {
-      value: new Date(value)
+      value: date,
+      id: date.format('long')
     });
   }
 
@@ -848,6 +893,34 @@ module.exports = DateModel = (function(_super) {
       title: 'Position',
       image: 'img/geo.png',
       content: this.get('lat') + ';' + this.get('long')
+    };
+  };
+
+  return DateModel;
+
+})(Backbone.Model);
+
+});
+
+;require.register("models/value", function(exports, require, module) {
+var DateModel,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = DateModel = (function(_super) {
+  __extends(DateModel, _super);
+
+  function DateModel(value) {
+    DateModel.__super__.constructor.call(this, {
+      value: value,
+      id: value
+    });
+  }
+
+  DateModel.prototype.getSummary = function() {
+    return {
+      title: this.get('value'),
+      image: 'img/date.png'
     };
   };
 
@@ -1192,15 +1265,37 @@ module.exports = SearchResults = (function(_super) {
     return $(elem).attr(attr);
   };
 
+  SearchResults.prototype.overlaps = function(top, left) {
+    var cid, v, view, _ref1;
+
+    _ref1 = this.views;
+    for (cid in _ref1) {
+      view = _ref1[cid];
+      v = view.$el.position();
+      if (Math.abs(v.left - left) + Math.abs(v.top - top) < 1) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   SearchResults.prototype.appendView = function(view) {
     var left, links, top, views, _ref1,
       _this = this;
 
-    links = this.collection.links.filter(function(l) {
+    links = this.collection.links.map(function(l) {
+      return {
+        s: _this.collection.get(l.s).cid,
+        o: _this.collection.get(l.o).cid
+      };
+    });
+    console.log(links);
+    links = links.filter(function(l) {
       var _ref1;
 
       return (_ref1 = view.model.cid) === l.s || _ref1 === l.o;
     });
+    console.log(links);
     links = links.map(function(l) {
       if (l.s === view.model.cid) {
         return l.o;
@@ -1208,29 +1303,41 @@ module.exports = SearchResults = (function(_super) {
         return l.s;
       }
     });
+    console.log(links);
     views = links.map(function(cid) {
       return _this.views[cid];
     }).filter(function(x) {
       return !!x;
     });
+    console.log(views);
     if (views.length) {
       _ref1 = views[0].$el.position(), top = _ref1.top, left = _ref1.left;
+      top = 50;
       left += 350;
-      this.maxLeft = Math.max(left, this.maxLeft);
-      this.$el.width(this.maxLeft + 500);
+      while (this.overlaps(top, left)) {
+        top += 100;
+      }
     } else {
       left = 50;
-      this.maxTop = top = this.maxTop + 100;
-      this.$el.height(this.maxTop + 500);
+      top = this.maxTop + 100;
     }
-    this.$el.append(this.lines.attr({
-      width: this.$el.width(),
-      height: this.$el.height()
-    }));
     view.$el.css({
       top: top,
       left: left
     });
+    if (top > this.maxTop) {
+      this.maxTop = top;
+    }
+    if (left > this.maxTop) {
+      this.maxLeft = left;
+    }
+    this.$el.height(this.maxTop + 500);
+    this.$el.width(this.maxLeft + 500);
+    this.lines.attr({
+      width: this.$el.width(),
+      height: this.$el.height()
+    });
+    this.$el.append(this.lines);
     SearchResults.__super__.appendView.apply(this, arguments);
     return views.forEach(function(linked) {
       var a, b;
