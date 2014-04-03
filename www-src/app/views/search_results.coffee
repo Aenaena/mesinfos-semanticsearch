@@ -18,29 +18,45 @@ module.exports = class SearchResults extends ViewCollection
         elem = window.document.createElementNS('http://www.w3.org/2000/svg', tagName)
         $(elem).attr(attr)
 
+    overlaps: (top, left) ->
+        for cid, view of @views
+            v = view.$el.position()
+            return true if Math.abs(v.left - left) + Math.abs(v.top - top) < 1
+
+        return false
 
     appendView: (view) ->
-        links = @collection.links.filter (l) -> view.model.cid in [l.s, l.o]
+        links = @collection.links.map (l) => s:@collection.get(l.s).cid, o:@collection.get(l.o).cid
+        console.log(links)
+        links = links.filter (l) -> view.model.cid in [l.s, l.o]
+        console.log links
         links = links.map (l) -> if l.s is view.model.cid then l.o else l.s
+        console.log links
         views = links.map((cid) => @views[cid]).filter (x) -> not not x
+        console.log views
+
 
         if views.length
-            # there is some links, put it on the right
+            # there is some links, figure where to place it
             {top, left} = views[0].$el.position()
+            top = 50
             left += 350
-
-            @maxLeft = Math.max(left, @maxLeft)
-            @$el.width @maxLeft + 500
+            while @overlaps top, left
+                top += 100
 
         else
             left = 50
-            @maxTop = top = @maxTop + 100
-            @$el.height @maxTop + 500
+            top = @maxTop + 100
 
-
-        @$el.append @lines.attr width: @$el.width(), height:@$el.height()
 
         view.$el.css {top, left}
+        @maxTop = top if top > @maxTop
+        @maxLeft = left if left > @maxTop
+        @$el.height @maxTop + 500
+        @$el.width @maxLeft + 500
+        @lines.attr width: @$el.width(), height:@$el.height()
+        @$el.append @lines
+
         super
         views.forEach (linked) =>
             a = linked.centerPos()

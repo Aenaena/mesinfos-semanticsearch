@@ -46,6 +46,12 @@ rcpd:hasBarcode
     rdfs:label "barcode"^^xsd:string ;
     rdfs:range xsd:string .
 
+rcpd:hasReceiptId
+    a owl:DatatypeProperty ;
+    rdfs:domain rcpd:ReceiptDetail ;
+    rdfs:label "receiptid"^^xsd:string ;
+    rdfs:range xsd:string .
+
 rcpd:hasFamilyLabel
     a owl:DatatypeProperty ;
     rdfs:domain rcpd:ReceiptDetail ;

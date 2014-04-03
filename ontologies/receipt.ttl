@@ -20,7 +20,7 @@ rcp:Receipt
 
 ###########################################
 # Object properties
-########################################### 
+###########################################
 
 # Basic inference from the 'origin' string in dataset
 
@@ -48,6 +48,12 @@ rcp:hasPaidAmount
     a owl:DatatypeProperty ;
     rdfs:domain rcp:Receipt ;
     rdfs:range xsd:float .
+
+rcp:hasReceiptId
+    a owl:DatatypeProperty ;
+    rdfs:domain rcp:Receipt ;
+    rdfs:label "receiptid"^^xsd:string ;
+    rdfs:range xsd:string .
 
 rcp:isOnline
     a owl:DatatypeProperty ;

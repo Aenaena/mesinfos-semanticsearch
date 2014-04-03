@@ -12,6 +12,7 @@ module.exports = (resultObject) ->
             PREFIX time: <http://www.w3.org/2006/time#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             PREFIX rcp: <http://www.techtane.info/receipt.ttl#>
+            PREFIX rcpd: <http://www.techtane.info/receiptdetail.ttl#>
             PREFIX pdta: <http://www.techtane.info/personaldata.ttl#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX bko: <http://www.techtane.info/bankoperation.ttl#>

@@ -37,6 +37,7 @@ rules = (t) ->
     t.addRule /^appels$/,"phoneCall"
     t.addRule /^contacte$/,"phoneComLog"
     t.addRule /^contactee$/,"phoneComLog"
+    t.addRule /^sms$/, "phoneText"
     t.addRule /^ecrit$/,"phoneText"
 
     # TEMPORAL OBJECTS

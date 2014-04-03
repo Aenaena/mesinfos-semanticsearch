@@ -80,6 +80,10 @@ RDFStorage.tools = tools =
         rdf = RDFStorage.store.rdf
         rdf.createLiteral i, null, rdf.resolve('xsd:float')
 
+    makeString: (i) ->
+        rdf = RDFStorage.store.rdf
+        rdf.createLiteral i, null, rdf.resolve('xsd:string')
+
     addDuration: (graph, model, units, count) ->
         name = tools.modelName model
         graph.add tools.makeTriple name, "time:hasDuration", "#{name}.duration"

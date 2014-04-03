@@ -1,7 +1,8 @@
 module.exports = class DateModel extends Backbone.Model
 
     constructor: (value) ->
-        super value: new Date(value)
+        date = new Date(value)
+        super value: date, id: date.format('long')
 
     getSummary:  ->
         title: @get('value').format('short')

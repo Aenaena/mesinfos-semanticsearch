@@ -25,3 +25,28 @@ Contact::toRDFGraph = (rdf) ->
             graph.add rdf.makeTriple nodeName, "foaf:mbox", "mailto:#{dp.value}"
 
     return graph
+
+Contact::aroundSPARQL = ->
+    """
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX prcd: <http://www.techtane.info/phonecommunicationlog.ttl#>
+    PREFIX time: <http://www.w3.org/2006/time#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX my: <https://my.cozy.io/>
+    SELECT ?person ?tel ?log ?instant ?mail
+    WHERE {
+        ?person <a> foaf:Person
+        OPTIONAL {
+            ?person foaf:phone ?tel .
+        }
+        OPTIONAL {
+            ?log prcd:hasCorrespondantNumber ?tel .
+            ?log <a>/rdfs:subClassOf prcd:PhoneCommunicationLog .
+            ?log time:hasInstant/time:inDateTime ?instant .
+        }
+        OPTIONAL {
+            ?person foaf:mbox ?mail
+        }
+        FILTER(?person = my:#{@_id}) .
+    }
+    """

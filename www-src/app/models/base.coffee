@@ -1,5 +1,6 @@
 module.exports = class BaseModel extends Backbone.Model
 
+    idAttribute: '_id'
 
     getSummary:  ->
         switch @get('docType')?.toLowerCase()
@@ -38,6 +39,12 @@ module.exports = class BaseModel extends Backbone.Model
 
             when 'receipt'
                 title: 'Ticket de Caisse'
+                content: @get('amount') + '€'
+                image: 'img/receipt.png'
+
+            when 'receiptdetail'
+                title: @get('label')
+                content: @get('price') + '€'
                 image: 'img/receipt.png'
 
             when 'error'
@@ -45,7 +52,7 @@ module.exports = class BaseModel extends Backbone.Model
                 title: @get('error') or 'Error'
 
             else
-                image: 'http://placehold.it/64&text=?'
+                image: 'img/idk.png'
                 title: @get('title') or '???'
 
 
