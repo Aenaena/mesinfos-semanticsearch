@@ -9,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aenario/mesinfos-semanticsearch"
+    "url": "https://github.com/Aenaena/mesinfos-semanticsearch.git"
   },
-  "author": "Pierre Alexandre Kofron & Romain Foucault",
+  "author": "Pierre Alexandre Kofron",
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
