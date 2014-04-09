@@ -64,10 +64,7 @@ module.exports =
             if vars.length is 2
                 links.push s: vars[0], o: vars[1]
             else if vars.length is 3
-                links.push
-                    s: vars[0], o: vars[1]
-                    s: vars[1], o: vars[2]
-                    s: vars[0], o: vars[2]
+                links.push s: vars[0], o: vars[2]
 
         handleResults = (success, results) ->
             return next new Error(results) unless success
