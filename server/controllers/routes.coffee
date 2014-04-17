@@ -20,16 +20,20 @@ module.exports =
         Progress = require '../models/progress_store'
         rimraf = require '../lib/rimraf'
         fs = require 'fs'
+        
+        cb = (err) ->
+            console.log err
+            next err
 
         rimraf './si', (err) ->
-            return next err if err
+            return cb err if err
             rimraf './matcher', (err) ->
-                return next err if err
+                return cb err if err
                 fs.unlink 'search-index.json', (err) ->
-                    return next err if err
+                    return cb err if err
                     RDFStorage.requestDestroy 'all', (err) ->
-                        return next err if err
+                        return cb err if err
                         Progress.requestDestroy 'byDoctype', (err) ->
-                            return next err if err
+                            return cb err if err
                             res.send done: 'ok'
                             process.exit 1
