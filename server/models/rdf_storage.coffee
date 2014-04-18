@@ -23,6 +23,7 @@ RDFStorage::asMockLocalStorage = ->
 
 RDFStorage.init = (callback) ->
     RDFStorage.request 'semsearchall', (err, docs) ->
+        console.log "THIS BREAKS", err, docs if err
         return callback err if err
         RDFStorage.instance = docs?[0] or new RDFStorage data: {}
         storeMaker = rdfstore RDFStorage.instance.asMockLocalStorage()
