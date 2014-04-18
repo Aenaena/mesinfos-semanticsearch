@@ -1,4 +1,3 @@
-
 defaultView = 'semsearchall': (doc) -> emit doc._id, {_id:doc._id, _rev:doc._rev}
 
 module.exports =
@@ -9,5 +8,5 @@ module.exports =
     'receipt'               : defaultView
     'receiptdetail'         : defaultView
 
-    'rdf_storage'           : 'all': (doc) -> emit doc._id, doc
+    'rdf_storage'           : 'semsearchall': (doc) -> emit doc._id, doc
     'progress_store'        : 'byDoctype': (doc) -> emit doc.refdoctype, doc
