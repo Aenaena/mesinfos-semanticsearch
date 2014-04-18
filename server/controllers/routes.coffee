@@ -30,7 +30,7 @@ module.exports =
             rimraf './matcher', (err) ->
                 return cb err if err
                 fs.unlink 'search-index.json', (err) ->
-                    return cb err if err
+                    #return cb err if err # might not exist
                     RDFStorage.requestDestroy 'all', (err) ->
                         return cb err if err
                         Progress.requestDestroy 'byDoctype', (err) ->
