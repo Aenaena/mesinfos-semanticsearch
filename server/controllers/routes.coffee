@@ -31,7 +31,7 @@ module.exports =
                 return cb err if err
                 fs.unlink 'search-index.json', (err) ->
                     #return cb err if err # might not exist
-                    RDFStorage.requestDestroy 'all', (err) ->
+                    RDFStorage.requestDestroy 'semsearchall', (err) ->
                         return cb err if err
                         Progress.requestDestroy 'byDoctype', (err) ->
                             return cb err if err
