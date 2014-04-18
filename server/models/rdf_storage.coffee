@@ -22,7 +22,7 @@ RDFStorage::asMockLocalStorage = ->
     removeItem: (key) -> delete data[key]
 
 RDFStorage.init = (callback) ->
-    RDFStorage.request 'all', (err, docs) ->
+    RDFStorage.request 'semsearchall', (err, docs) ->
         return callback err if err
         RDFStorage.instance = docs?[0] or new RDFStorage data: {}
         storeMaker = rdfstore RDFStorage.instance.asMockLocalStorage()
